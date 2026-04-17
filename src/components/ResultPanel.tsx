@@ -298,6 +298,18 @@ export function ResultPanel({
             ))}
           </div>
 
+          {recommendedVtuber ? (
+            <article className="stage-recommendation-card summary-recommendation-card">
+              <p className="mini-label">Bonus Pick</p>
+              <h3>あなたに今おすすめのVtuber</h3>
+              <p className="stage-recommendation-name">{recommendedVtuber}</p>
+              <p className="stage-recommendation-note">
+                今回の読みと響きやすい空気感として、そっと近くに置きたくなる名前です。気になったら、
+                その雰囲気ごと受け取るつもりで触れてみてください。
+              </p>
+            </article>
+          ) : null}
+
           <div className="summary-card">
             <p className="summary-label">全体の読み取りについて</p>
             <p className="mini-label">{recipientLabel}へ</p>

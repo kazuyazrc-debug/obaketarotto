@@ -54,26 +54,6 @@ function App() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   useEffect(() => {
-    const raw = window.localStorage.getItem('nica-tarot-history')
-    if (!raw) return
-
-    try {
-      const parsed = JSON.parse(raw) as ReadingResult[]
-      setHistory(parsed)
-      setLatestReading(parsed[0] ?? null)
-      if (parsed[0]) {
-        setRitualPhase('complete')
-      }
-    } catch {
-      window.localStorage.removeItem('nica-tarot-history')
-    }
-  }, [])
-
-  useEffect(() => {
-    window.localStorage.setItem('nica-tarot-history', JSON.stringify(history))
-  }, [history])
-
-  useEffect(() => {
     setExpandedCards({})
   }, [latestReading?.id])
 
@@ -200,7 +180,6 @@ function App() {
     setSelectedCardNo(null)
     setSelectionCards([])
     setRitualPhase('idle')
-    window.localStorage.removeItem('nica-tarot-history')
   }
 
   async function handleShareImage() {
