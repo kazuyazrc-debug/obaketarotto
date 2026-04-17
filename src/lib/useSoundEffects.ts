@@ -4,7 +4,7 @@ type SoundEffectName = 'select' | 'shuffle' | 'result' | 'hover' | 'share'
 
 const SOUND_STORAGE_KEY = 'obake-tarot-sound'
 const BGM_SRC = '/audio/tarot-bgm.mp3'
-const BGM_VOLUME = 0.04
+const BGM_VOLUME = 0.025
 
 export function useSoundEffects() {
   const audioContextRef = useRef<AudioContext | null>(null)

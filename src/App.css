@@ -2179,12 +2179,6 @@ button:focus-visible {
     transform: none;
   }
 
-  .choice-card:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    max-width: 220px;
-    justify-self: center;
-  }
-
   .stage-order-rail {
     flex-direction: row;
     justify-content: flex-start;
@@ -2270,10 +2264,6 @@ button:focus-visible {
   .selection-fan {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-  }
-
-  .choice-card:last-child:nth-child(odd) {
-    max-width: none;
   }
 
   .stage-card {
