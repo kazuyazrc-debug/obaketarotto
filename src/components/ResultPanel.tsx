@@ -281,8 +281,8 @@ export function ResultPanel({
                 <p>{sanitize(latestSnapshot.headline)}</p>
               </article>
               <article className="overview-card">
-                <p className="mini-label">Axis</p>
-                <h3>いま整える軸</h3>
+                <p className="mini-label">How</p>
+                <h3>どう生きる？</h3>
                 <p>{sanitize(latestSnapshot.nextStep)}</p>
               </article>
             </div>

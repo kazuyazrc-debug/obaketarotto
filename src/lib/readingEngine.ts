@@ -429,10 +429,10 @@ export function buildReadingSnapshot(reading: ReadingResult): ReadingSnapshot {
 
   const nextStep =
     method
-      ? `まずは ${method.cardName} が示すように、${firstActionOf(method.cardNo) || '次の一歩を小さく具体化する'}ことから始めると、読みに現実の手触りが生まれます。`
+      ? `今夜は ${method.cardName} に従い、${buildSnapshotAction(reading.input.intent, method, now, future)}。`
       : keyPosition
-        ? `まずは ${keyPosition.cardName} が示す方向へ、小さく一つだけ行動を置いてみてください。`
-        : 'まずは今日できる小さな行動をひとつだけ決めてみてください。'
+        ? `今夜は ${keyPosition.cardName} の方向へ寄せて、迷いを抱えたままでも一つだけ具体的な行動を置いてください。`
+        : '今夜は答えを急がず、明日までに動ける一つの行動だけを静かに決めてください。'
 
   const caution = reversedCard
     ? `気をつけたいのは ${reversedCard.cardName} の影の出方です。不安や思い込みが膨らむ時ほど、事実と感情を分けて扱うと落ち着きます。`
@@ -457,4 +457,34 @@ export function buildReadingSnapshot(reading: ReadingResult): ReadingSnapshot {
 
 function cardByNo(cardNo: number): CardDefinition | undefined {
   return cards.find((card) => card.no === cardNo)
+}
+
+function buildSnapshotAction(
+  intent: IntentCategory,
+  method: ReadingPositionResult,
+  now?: ReadingPositionResult,
+  future?: ReadingPositionResult,
+) {
+  const methodAction = firstActionOf(method.cardNo) || '次の一歩を小さく具体化する'
+  const currentCue = now ? firstActionOf(now.cardNo) : ''
+  const futureCue = future ? firstActionOf(future.cardNo) : ''
+
+  switch (intent) {
+    case '恋愛':
+      return `${methodAction}ことを優先し、気持ちは決めきらなくても相手に伝える言葉を一つだけ準備してください`
+    case '仕事':
+      return `${methodAction}ことに集中し、明日すぐ着手する作業を一つに絞って順番を決めてください`
+    case '人間関係':
+      return `${methodAction}ことを軸に、距離を縮めるか守るかを一つだけ選んで言葉にしてください`
+    case '配信活動':
+      return `${methodAction}ことから始め、次の配信で試す見せ方を一つだけ決めてください`
+    case '創作':
+      return `${methodAction}ことを優先し、完成度より公開できる最小単位を今夜のうちに決めてください`
+    case '学業':
+      return `${methodAction}ことを起点に、次に学ぶ範囲を一つだけ区切って着手時間まで決めてください`
+    case 'メンタル':
+      return `${methodAction}ことを大切にし、無理に前向きにならず負荷を下げる行動を一つ選んでください`
+    case 'その他':
+      return `${methodAction}ことから始め、${currentCue || futureCue || '今夜いちばん重い論点'}に対して動ける小さな行動を一つだけ置いてください`
+  }
 }
