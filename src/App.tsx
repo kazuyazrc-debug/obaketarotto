@@ -4,9 +4,11 @@ import { InputPanel } from './components/InputPanel'
 import { ResultPanel } from './components/ResultPanel'
 import { HistoryPanel } from './components/HistoryPanel'
 import { CardSelectionStage } from './components/CardSelectionStage'
+import { SoundToggle } from './components/SoundToggle'
 import { intentSupport } from './data/intentSupport'
 import { cards, type CardDefinition } from './data/tarot'
 import { buildReadingShareBlob } from './lib/share'
+import { useSoundEffects } from './lib/useSoundEffects'
 import {
   buildReadingSnapshot,
   createReading,
@@ -52,10 +54,29 @@ function App() {
   const [selectionCards, setSelectionCards] = useState<RitualSelectionCard[]>([])
   const [selectedCardNo, setSelectedCardNo] = useState<number | null>(null)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const {
+    isAudioReady,
+    isSoundEnabled,
+    playHover,
+    playResult,
+    playSelect,
+    playShare,
+    playShuffle,
+    startBgm,
+    toggleSound,
+  } = useSoundEffects()
 
   useEffect(() => {
     setExpandedCards({})
   }, [latestReading?.id])
+
+  useEffect(() => {
+    if (!latestReading) {
+      return
+    }
+
+    playResult()
+  }, [latestReading?.id, latestReading, playResult])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -96,6 +117,8 @@ function App() {
       return
     }
 
+    void startBgm()
+    playShuffle()
     setNotice('')
     setSelectedCardNo(null)
     setSelectionCards(pickSelectionCards(5))
@@ -113,6 +136,8 @@ function App() {
       return
     }
 
+    void startBgm()
+    playSelect()
     setSelectedCardNo(cardNo)
     setRitualPhase('chosenCardAnimating')
     setNotice('')
@@ -195,6 +220,7 @@ function App() {
           text: latestReading.summary.short,
           files: [file],
         })
+        playShare()
         return
       }
 
@@ -203,6 +229,7 @@ function App() {
       anchor.href = url
       anchor.download = 'nica-tarot-reading.png'
       anchor.click()
+      playShare()
       URL.revokeObjectURL(url)
     } catch (error) {
       setNotice(
@@ -273,6 +300,7 @@ function App() {
             latestSnapshot={latestSnapshot}
             notice={notice}
             stepLabel={latestReading ? 'Step 3' : 'Step 2'}
+            onHexagramHover={playHover}
             onSelectLength={setActiveLength}
             onShareImage={handleShareImage}
             onToggleCardDetail={toggleCardDetail}
@@ -281,6 +309,11 @@ function App() {
       </section>
 
       <HistoryPanel history={history} onClear={clearHistory} onOpenItem={openHistoryItem} />
+      <SoundToggle
+        isAudioReady={isAudioReady}
+        isSoundEnabled={isSoundEnabled}
+        onToggle={toggleSound}
+      />
     </main>
   )
 }

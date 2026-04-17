@@ -105,19 +105,7 @@ export function InputPanel({
     <section className="panel form-panel">
       <div className="panel-head">
         <p className="panel-kicker">Step 1</p>
-        <h2>問いをしずかに整える</h2>
-        <p className="panel-note">
-          ここでは答えを整えなくて大丈夫です。いま気になっている輪郭だけを置いて、次に一枚を選びます。
-        </p>
-      </div>
-
-      <div className="ritual-summary">
-        <p className="mini-label">Reading Flow</p>
-        <div className="ritual-summary-row">
-          <span>問いを書く</span>
-          <span>一枚を選ぶ</span>
-          <span>六芒へひらく</span>
-        </div>
+        <h2>占いたいことを教えてください</h2>
       </div>
 
       <div className="field-grid compact-grid">
@@ -172,12 +160,6 @@ export function InputPanel({
               )
             })}
           </div>
-        </div>
-
-        <div className="ritual-field-display">
-          <span className="mini-label">Spread</span>
-          <strong>{currentSpread.name}</strong>
-          <p>{currentSpread.description}</p>
         </div>
       </div>
 
@@ -258,10 +240,15 @@ export function InputPanel({
         ) : null}
       </details>
 
-      <div className="position-chip-strip">
-        {currentSpread.positions.map((position) => (
-          <span key={position}>{position}</span>
-        ))}
+      <div className="ritual-field-display spread-display-bottom">
+        <span className="mini-label">Spread</span>
+        <strong>{currentSpread.name}</strong>
+        <p>{currentSpread.description}</p>
+        <div className="spread-position-row" aria-label="六芒スプレッドの配置">
+          {currentSpread.positions.map((position) => (
+            <span key={position}>{position}</span>
+          ))}
+        </div>
       </div>
 
       <button

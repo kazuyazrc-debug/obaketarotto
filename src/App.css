@@ -254,9 +254,10 @@
 }
 
 .panel-head h2 {
-  font-size: clamp(1.42rem, 2vw, 1.86rem);
+  font-family: var(--heading);
+  font-size: clamp(1.34rem, 1.8vw, 1.72rem);
   line-height: 1.14;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.028em;
   font-weight: 500;
   color: #1c2438;
 }
@@ -546,41 +547,6 @@ button:focus-visible {
   min-height: 100%;
 }
 
-.ritual-summary {
-  margin-bottom: 18px;
-  padding: 16px 18px;
-  border-radius: 22px;
-  border: 1px solid rgba(96, 109, 142, 0.26);
-  background:
-    radial-gradient(circle at top right, rgba(201, 213, 255, 0.16), transparent 24%),
-    linear-gradient(180deg, rgba(212, 220, 238, 0.92), rgba(194, 203, 223, 0.86));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.36),
-    0 12px 28px rgba(35, 42, 62, 0.08);
-}
-
-.ritual-summary-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.ritual-summary-row span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(108, 121, 154, 0.2);
-  background: rgba(231, 236, 246, 0.6);
-  color: #233048;
-  font-size: 0.84rem;
-  letter-spacing: 0.03em;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34);
-}
-
 .compact-grid {
   gap: 12px;
 }
@@ -601,51 +567,57 @@ button:focus-visible {
     0 8px 18px rgba(48, 56, 76, 0.06);
 }
 
-.timeframe-field,
-.ritual-field-display {
+.timeframe-field {
   grid-column: 1 / -1;
 }
 
 .timeframe-field {
-  gap: 12px;
+  gap: 14px;
 }
 
 .timeframe-head {
   display: grid;
-  gap: 4px;
+  gap: 5px;
 }
 
 .timeframe-head span {
   color: var(--text-strong);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .timeframe-head small {
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  line-height: 1.5;
+  color: rgba(88, 98, 124, 0.94);
+  font-size: 0.8rem;
+  line-height: 1.55;
 }
 
 .timeframe-chip-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .timeframe-chip {
   display: grid;
-  gap: 5px;
-  min-height: 82px;
-  padding: 13px 14px;
-  border: 1px solid rgba(128, 139, 175, 0.16);
-  border-radius: 18px;
+  gap: 7px;
+  min-height: 90px;
+  padding: 14px 15px;
+  border: 1px solid rgba(112, 124, 159, 0.2);
+  border-radius: 20px;
   background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.52), transparent 24%),
-    linear-gradient(180deg, rgba(245, 248, 255, 0.94), rgba(226, 231, 243, 0.86));
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.58), transparent 24%),
+    linear-gradient(180deg, rgba(248, 250, 255, 0.96), rgba(228, 233, 245, 0.88));
   color: var(--text-strong);
   text-align: left;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.58),
-    0 10px 22px rgba(42, 48, 69, 0.07);
+    inset 0 1px 0 rgba(255, 255, 255, 0.66),
+    0 12px 24px rgba(42, 48, 69, 0.08);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
 }
 
 .timeframe-chip-top {
@@ -656,8 +628,8 @@ button:focus-visible {
 }
 
 .timeframe-chip-icon {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.62);
   box-shadow:
@@ -668,10 +640,10 @@ button:focus-visible {
 .timeframe-chip-band {
   display: inline-flex;
   align-items: center;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
   font-family: var(--decorative);
   text-transform: uppercase;
   border: 1px solid transparent;
@@ -699,32 +671,35 @@ button:focus-visible {
 }
 
 .timeframe-chip strong {
-  font-size: 0.97rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 .timeframe-chip small {
-  color: rgba(84, 95, 121, 0.92);
-  font-size: 0.76rem;
-  line-height: 1.45;
+  color: rgba(74, 85, 111, 0.92);
+  font-size: 0.74rem;
+  line-height: 1.5;
 }
 
 .timeframe-chip:hover {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
-    0 14px 28px rgba(41, 48, 69, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 16px 32px rgba(41, 48, 69, 0.12);
+  transform: translateY(-1px);
 }
 
 .timeframe-chip.active {
-  border-color: rgba(195, 176, 125, 0.34);
+  border-color: rgba(194, 176, 129, 0.42);
   background:
-    radial-gradient(circle at top right, rgba(255, 252, 243, 0.6), transparent 22%),
-    linear-gradient(180deg, rgba(255, 249, 237, 0.97), rgba(234, 225, 206, 0.92));
+    radial-gradient(circle at top right, rgba(255, 252, 243, 0.68), transparent 22%),
+    linear-gradient(180deg, rgba(255, 250, 239, 0.98), rgba(236, 226, 204, 0.94));
   color: #2f2730;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 16px 30px rgba(92, 74, 40, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.74),
+    0 18px 34px rgba(92, 74, 40, 0.14),
+    0 0 0 1px rgba(241, 233, 209, 0.32);
 }
 
 .timeframe-chip.active small {
@@ -733,6 +708,13 @@ button:focus-visible {
 
 .timeframe-chip.active .timeframe-chip-band {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
+}
+
+.timeframe-chip.active .timeframe-chip-icon {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 0 0 5px rgba(248, 237, 208, 0.16),
+    0 0 18px rgba(209, 184, 131, 0.24);
 }
 
 .ritual-field-display strong {
@@ -752,6 +734,28 @@ button:focus-visible {
 .ritual-field-display .mini-label {
   color: rgba(104, 115, 141, 0.82);
   text-shadow: none;
+}
+
+.spread-display-bottom {
+  margin-top: 16px;
+}
+
+.spread-position-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.spread-position-row span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(110, 124, 159, 0.18);
+  background: rgba(224, 230, 241, 0.86);
+  color: #34415c;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
 .intent-support-head {
@@ -808,22 +812,6 @@ button:focus-visible {
 
 .nested-field {
   margin-top: 14px;
-}
-
-.position-chip-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.position-chip-strip span {
-  padding: 8px 13px;
-  border-radius: 999px;
-  border: 1px solid rgba(110, 124, 159, 0.2);
-  background: rgba(214, 222, 238, 0.88);
-  color: #29344c;
-  font-size: 0.8rem;
 }
 
 .ritual-button {
@@ -1905,6 +1893,67 @@ button:focus-visible {
   color: var(--text-muted);
 }
 
+.sound-toggle {
+  position: fixed;
+  right: max(14px, calc(14px + env(safe-area-inset-right)));
+  bottom: max(14px, calc(14px + env(safe-area-inset-bottom)));
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 11px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(203, 213, 239, 0.18);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(18, 23, 38, 0.94), rgba(36, 44, 70, 0.9));
+  color: rgba(240, 244, 255, 0.94);
+  box-shadow:
+    0 16px 34px rgba(7, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.sound-toggle.is-muted {
+  border-color: rgba(151, 161, 186, 0.18);
+  color: rgba(219, 226, 244, 0.84);
+  opacity: 0.92;
+}
+
+.sound-toggle-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #cdd6ec;
+  box-shadow: 0 0 0 4px rgba(205, 214, 236, 0.12);
+  flex: none;
+}
+
+.sound-toggle.is-enabled .sound-toggle-dot {
+  background: #f2dfb4;
+  box-shadow:
+    0 0 0 4px rgba(242, 223, 180, 0.12),
+    0 0 18px rgba(242, 223, 180, 0.34);
+}
+
+.sound-toggle-copy {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.sound-toggle-copy strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  font-family: var(--decorative);
+}
+
+.sound-toggle-copy small {
+  font-size: 0.7rem;
+  color: rgba(214, 221, 240, 0.74);
+}
+
 .history-line {
   margin: 0;
   color: var(--text-strong);
@@ -1953,6 +2002,10 @@ button:focus-visible {
 
   .choice-card {
     width: min(170px, 30vw);
+  }
+
+  .sound-toggle {
+    min-height: 50px;
   }
 }
 
@@ -2029,10 +2082,6 @@ button:focus-visible {
     gap: 10px;
   }
 
-  .ritual-summary-row {
-    grid-template-columns: 1fr;
-  }
-
   .comfort-grid {
     grid-template-columns: 1fr;
   }
@@ -2059,6 +2108,13 @@ button:focus-visible {
 
   .result-buttons {
     display: grid;
+  }
+
+  .sound-toggle {
+    right: max(12px, calc(12px + env(safe-area-inset-right)));
+    bottom: max(12px, calc(12px + env(safe-area-inset-bottom)));
+    min-height: 48px;
+    padding: 10px 12px;
   }
 
   .ritual-strip {
@@ -2282,6 +2338,19 @@ button:focus-visible {
 
   .position-sequence {
     font-size: 0.68rem;
+  }
+
+  .sound-toggle {
+    gap: 8px;
+    padding: 10px 11px;
+  }
+
+  .sound-toggle-copy strong {
+    font-size: 0.76rem;
+  }
+
+  .sound-toggle-copy small {
+    font-size: 0.66rem;
   }
 }
 

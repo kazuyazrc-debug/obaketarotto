@@ -94,6 +94,7 @@ type ResultPanelProps = {
   latestSnapshot: ReadingSnapshot | null
   notice: string
   stepLabel: string
+  onHexagramHover: () => void
   onSelectLength: (length: ReadingLength) => void
   onShareImage: () => void
   onToggleCardDetail: (cardKey: string) => void
@@ -107,6 +108,7 @@ export function ResultPanel({
   latestSnapshot,
   notice,
   stepLabel,
+  onHexagramHover,
   onSelectLength,
   onShareImage,
   onToggleCardDetail,
@@ -118,6 +120,20 @@ export function ResultPanel({
   const recipientLabel = latestReading ? getRecipientLabel(latestReading.input.nickname) : 'あなた'
   const sanitize = (text: string) => sanitizeReadingText(text, latestReading)
   const recommendedVtuber = latestReading ? pickRecommendedVtuber(latestReading) : null
+
+  function handleHexagramEnter(label: HexagramLabel) {
+    setHoveredLabel((current) => {
+      if (current !== label) {
+        onHexagramHover()
+      }
+
+      return label
+    })
+  }
+
+  function clearHexagramHover() {
+    setHoveredLabel(null)
+  }
 
   return (
     <section className="panel result-panel">
@@ -255,10 +271,10 @@ export function ResultPanel({
                       .join(' ')}
                     style={{ animationDelay: `${0.14 + index * 0.08}s` }}
                     tabIndex={0}
-                    onMouseEnter={() => setHoveredLabel(position.label as HexagramLabel)}
-                    onMouseLeave={() => setHoveredLabel(null)}
-                    onFocus={() => setHoveredLabel(position.label as HexagramLabel)}
-                    onBlur={() => setHoveredLabel(null)}
+                    onMouseEnter={() => handleHexagramEnter(position.label as HexagramLabel)}
+                    onMouseLeave={clearHexagramHover}
+                    onFocus={() => handleHexagramEnter(position.label as HexagramLabel)}
+                    onBlur={clearHexagramHover}
                   >
                     <span className="hexagram-label">{position.label}</span>
                     <strong>
