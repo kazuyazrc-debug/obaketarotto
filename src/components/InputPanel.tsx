@@ -1,0 +1,252 @@
+import type { IntentSupport } from '../data/intentSupport'
+import {
+  intentOptions,
+  timeframeOptions,
+  type IntentCategory,
+  type TimeframeOption,
+} from '../data/tarot'
+import type { ReadingInput } from '../lib/reading'
+
+type SpreadPreview = {
+  name: string
+  description: string
+  positions: string[]
+}
+
+type InputPanelProps = {
+  currentSpread: SpreadPreview
+  currentSupport: IntentSupport
+  form: ReadingInput
+  isLoading: boolean
+  isRitualActive: boolean
+  onDraw: () => void
+  onQuestionTemplate: (template: string) => void
+  onUpdateField: <K extends keyof ReadingInput>(key: K, value: ReadingInput[K]) => void
+}
+
+const timeframeDescriptions: Record<TimeframeOption, string> = {
+  今日: '今日の流れと手応えを読む',
+  明日: '明日へ向けた兆しを映す',
+  今週: '今週の動きと整え方を見る',
+  来週: '次の一週間の備えを掴む',
+  来月: '来月へ続く変化を見渡す',
+  今年: '今年を通した巡りを確かめる',
+}
+
+const timeframeBands: Record<TimeframeOption, { label: '短期' | '中期' | '長期'; tone: string }> = {
+  今日: { label: '短期', tone: 'short' },
+  明日: { label: '短期', tone: 'short' },
+  今週: { label: '中期', tone: 'middle' },
+  来週: { label: '中期', tone: 'middle' },
+  来月: { label: '長期', tone: 'long' },
+  今年: { label: '長期', tone: 'long' },
+}
+
+const timeframeIntentLead: Record<TimeframeOption, string> = {
+  今日: '今日はごく近い空気と、その場で触れられる変化に焦点が当たります。',
+  明日: '明日までの流れでは、直近の判断やひと言の影響が見えやすくなります。',
+  今週: '今週は動き始める流れと、整え直しの効く地点が浮かびやすい時間幅です。',
+  来週: '来週を見る時は、次の展開へ向けた仕込みや備えが読みの中心になります。',
+  来月: '来月にかけては、変化がどう形になるかを少し引いた視点で見渡せます。',
+  今年: '今年の読みでは、積み上げや方向転換まで含めた長い流れを扱います。',
+}
+
+const intentLead: Record<IntentCategory, string> = {
+  仕事: '仕事では、優先順位と現実的な打ち手を先に見ると読みが活きます。',
+  配信活動: '配信活動では、見せ方の軸と続け方の温度感に注目すると輪郭が出ます。',
+  恋愛: '恋愛では、相手を当てるよりも感情の温度差や距離感の揺れを見る読みです。',
+  人間関係: '人間関係では、距離の取り方と役割の偏りに目を向けると分かりやすくなります。',
+  創作: '創作では、ひらめきそのものより形にする手前の詰まりを読むと具体的です。',
+  学業: '学業では、努力量よりも学び方の配分と続け方の癖を見ると実行しやすくなります。',
+  メンタル: 'メンタルでは、無理に前向きさを作るより負荷の出どころを見分ける読みになります。',
+  その他: 'まだ言葉にしきれていない迷いでも、いま重い論点から順に照らしていけます。',
+}
+
+function buildIntentTimeframeHint(intent: IntentCategory, timeframe: TimeframeOption) {
+  return `${timeframeIntentLead[timeframe]} ${intentLead[intent]}`
+}
+
+export function InputPanel({
+  currentSpread,
+  currentSupport,
+  form,
+  isLoading,
+  isRitualActive,
+  onDraw,
+  onQuestionTemplate,
+  onUpdateField,
+}: InputPanelProps) {
+  return (
+    <section className="panel form-panel">
+      <div className="panel-head">
+        <p className="panel-kicker">Step 1</p>
+        <h2>問いをしずかに整える</h2>
+        <p className="panel-note">
+          ここでは答えを整えなくて大丈夫です。いま気になっている輪郭だけを置いて、次に一枚を選びます。
+        </p>
+      </div>
+
+      <div className="ritual-summary">
+        <p className="mini-label">Reading Flow</p>
+        <div className="ritual-summary-row">
+          <span>問いを書く</span>
+          <span>一枚を選ぶ</span>
+          <span>六芒へひらく</span>
+        </div>
+      </div>
+
+      <div className="field-grid compact-grid">
+        <label>
+          あなたのお名前
+          <input
+            value={form.nickname}
+            onChange={(event) => onUpdateField('nickname', event.target.value)}
+            placeholder="未入力なら『あなた』で表示"
+          />
+        </label>
+
+        <label>
+          占いたい事
+          <select
+            value={form.intent}
+            onChange={(event) => onUpdateField('intent', event.target.value as IntentCategory)}
+          >
+            {intentOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <div className="field-shell timeframe-field">
+          <div className="timeframe-head">
+            <span>時間軸</span>
+            <small>読みたい近さにいちばん近いものを選んでください</small>
+          </div>
+          <div className="timeframe-chip-grid" role="radiogroup" aria-label="時間軸">
+            {timeframeOptions.map((option) => {
+              const isActive = form.timeframe === option
+              const band = timeframeBands[option]
+
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={`timeframe-chip${isActive ? ' active' : ''}`}
+                  aria-pressed={isActive}
+                  onClick={() => onUpdateField('timeframe', option)}
+                >
+                  <div className="timeframe-chip-top">
+                    <span className={`timeframe-chip-icon is-${band.tone}`} aria-hidden="true" />
+                    <span className={`timeframe-chip-band is-${band.tone}`}>{band.label}</span>
+                  </div>
+                  <strong>{option}</strong>
+                  <small>{timeframeDescriptions[option]}</small>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="ritual-field-display">
+          <span className="mini-label">Spread</span>
+          <strong>{currentSpread.name}</strong>
+          <p>{currentSpread.description}</p>
+        </div>
+      </div>
+
+      <div className="intent-support-card">
+        <div className="intent-support-head">
+          <div>
+            <p className="guidance-title">書き方の導き</p>
+            <p className="intent-support-note">{currentSupport.note}</p>
+            <p className="intent-context-hint">{buildIntentTimeframeHint(form.intent, form.timeframe)}</p>
+          </div>
+        </div>
+        <div className="template-list compact-template-list">
+          {currentSupport.prompts.map((template) => (
+            <button
+              key={template}
+              type="button"
+              className="template-chip"
+              onClick={() => onQuestionTemplate(template)}
+            >
+              {template}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <label className="block-field primary-field">
+        {currentSupport.questionLabel}
+        <textarea
+          rows={4}
+          value={form.question}
+          onChange={(event) => onUpdateField('question', event.target.value)}
+          placeholder={currentSupport.questionPlaceholder}
+        />
+      </label>
+
+      <label className="block-field">
+        {currentSupport.backgroundLabel}
+        <textarea
+          rows={4}
+          value={form.background}
+          maxLength={300}
+          onChange={(event) => onUpdateField('background', event.target.value)}
+          placeholder={currentSupport.backgroundPlaceholder}
+        />
+      </label>
+
+      <details className="details-panel">
+        <summary>詳細設定をひらく</summary>
+
+        <div className="toggle-row advanced-toggle-row">
+          <label>
+            <input
+              type="checkbox"
+              checked={form.reversals}
+              onChange={(event) => onUpdateField('reversals', event.target.checked)}
+            />
+            逆位置も読む
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={form.relationTheme}
+              onChange={(event) => onUpdateField('relationTheme', event.target.checked)}
+            />
+            関係性がテーマ
+          </label>
+        </div>
+
+        {form.relationTheme ? (
+          <label className="block-field nested-field">
+            関係性の種類
+            <input
+              value={form.relationType}
+              onChange={(event) => onUpdateField('relationType', event.target.value)}
+              placeholder="恋人 / 友人 / 家族 / 同僚 / 配信仲間 など"
+            />
+          </label>
+        ) : null}
+      </details>
+
+      <div className="position-chip-strip">
+        {currentSpread.positions.map((position) => (
+          <span key={position}>{position}</span>
+        ))}
+      </div>
+
+      <button
+        className="draw-button ritual-button"
+        type="button"
+        onClick={onDraw}
+        disabled={!form.question.trim() || isLoading || isRitualActive}
+      >
+        {isLoading || isRitualActive ? '儀式を整えています…' : '六芒の儀を始める'}
+      </button>
+    </section>
+  )
+}
