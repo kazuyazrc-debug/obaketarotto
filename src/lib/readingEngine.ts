@@ -429,7 +429,7 @@ export function buildReadingSnapshot(reading: ReadingResult): ReadingSnapshot {
 
   const nextStep =
     method
-      ? `今夜は ${method.cardName} に従い、${buildSnapshotAction(reading.input.intent, method, now, future)}。`
+      ? `今夜は ${method.cardName} に従い、${buildAdaptiveSnapshotAction(reading.input.intent, method, now, future)}。`
       : keyPosition
         ? `今夜は ${keyPosition.cardName} の方向へ寄せて、迷いを抱えたままでも一つだけ具体的な行動を置いてください。`
         : '今夜は答えを急がず、明日までに動ける一つの行動だけを静かに決めてください。'
@@ -458,6 +458,44 @@ export function buildReadingSnapshot(reading: ReadingResult): ReadingSnapshot {
 function cardByNo(cardNo: number): CardDefinition | undefined {
   return cards.find((card) => card.no === cardNo)
 }
+
+function buildAdaptiveSnapshotAction(
+  intent: IntentCategory,
+  method: ReadingPositionResult,
+  now?: ReadingPositionResult,
+  future?: ReadingPositionResult,
+) {
+  const methodAction = firstActionOf(method.cardNo) || '次の一歩を小さく具体化する'
+  const currentCue = now ? firstActionOf(now.cardNo) : ''
+  const futureCue = future ? firstActionOf(future.cardNo) : ''
+  const methodRole = method.roleLabel || method.cardName
+  const methodMotif = method.motif || method.short
+  const currentRole = now?.roleLabel || now?.cardName || 'いま強く出ている流れ'
+  const futureRole = future?.roleLabel || future?.cardName || '次にひらく兆し'
+  const futureCard = future?.cardName || 'この先の流れ'
+  const practicalHook = currentCue || futureCue || methodMotif
+
+  switch (intent) {
+    case '仕事':
+      return `${method.cardName}が示す${methodRole}を軸に、${methodAction}ことを最優先にしてください。${futureCard}へ流れをつなぐには、${practicalHook}を形にする作業を一つに絞り、着手の順番まで今のうちに決めておくのが有効です。`
+    case '恋愛':
+      return `${method.cardName}が示す${methodRole}を意識し、${methodAction}ことから気持ちを整えてください。${futureCard}へ向かう流れを穏やかに育てるには、答えを急ぐよりも、${methodMotif}が伝わる言葉を一つだけ準備しておくほうが関係を動かしやすくなります。`
+    case '人間関係':
+      return `${method.cardName}が示す${methodRole}に沿って、${methodAction}ことを対人の軸に置いてください。${currentRole}が濃い今は、相手に合わせすぎるより、距離を縮めるか守るかを一度だけはっきり決めるほうが流れを安定させます。`
+    case '配信活動':
+      return `${method.cardName}が示す${methodRole}を前面に出し、${methodAction}ことを次の配信準備に落とし込んでください。${futureCard}へ伸ばすには、${methodMotif}が見える見せ場を一つ作り、企画・話し方・導線のどこで光らせるかまで決めると動きやすくなります。`
+    case '創作':
+      return `${method.cardName}が示す${methodRole}を信じて、${methodAction}ことを制作の入口にしてください。完成度を一気に求めるより、${methodMotif}が伝わる最小単位をまず外に出せる形にすると、${futureRole}へつながる流れが具体化しやすくなります。`
+    case '学業':
+      return `${method.cardName}が示す${methodRole}を頼りに、${methodAction}ことを学びの中心に据えてください。今は量を広げるよりも、${practicalHook}に関わる範囲を一つだけ区切って、いつ取りかかるかまで決めるほうが理解と手応えを得やすくなります。`
+    case 'メンタル':
+      return `${method.cardName}が示す${methodRole}を守るつもりで、${methodAction}ことを心の整え方に置いてください。無理に前向きになるより、${methodMotif}を壊さない範囲で負荷を下げる行動を一つ選ぶほうが、結果として${futureCard}へ向かう流れを立て直しやすくなります。`
+    case 'その他':
+      return `${method.cardName}が示す${methodRole}を手がかりに、${methodAction}ことから始めてください。いまは大きな結論よりも、${practicalHook}に触れる小さな行動を一つ置くことで、${futureRole}へ向かう流れが実感しやすくなります。`
+  }
+}
+
+void buildSnapshotAction
 
 function buildSnapshotAction(
   intent: IntentCategory,

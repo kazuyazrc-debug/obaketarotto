@@ -71,7 +71,7 @@ export function useSoundEffects() {
       audioContextRef.current = context
 
       const masterGain = context.createGain()
-      masterGain.gain.value = 0.22
+      masterGain.gain.value = 0.3
       masterGain.connect(context.destination)
       masterGainRef.current = masterGain
       noiseBufferRef.current = createNoiseBuffer(context)
