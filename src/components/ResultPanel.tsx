@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { TarotCardFace } from './TarotCardFace'
 import type { ReadingLength, ReadingResult, ReadingSnapshot } from '../lib/reading'
 import { getRecipientLabel, sanitizeReadingText } from '../lib/readingDisplay'
@@ -301,12 +301,8 @@ export function ResultPanel({
           {recommendedVtuber ? (
             <article className="stage-recommendation-card summary-recommendation-card">
               <p className="mini-label">Bonus Pick</p>
-              <h3>あなたに今おすすめのVtuber</h3>
+              <h3>あなたにおすすめのVtuber</h3>
               <p className="stage-recommendation-name">{recommendedVtuber}</p>
-              <p className="stage-recommendation-note">
-                今回の読みと響きやすい空気感として、そっと近くに置きたくなる名前です。気になったら、
-                その雰囲気ごと受け取るつもりで触れてみてください。
-              </p>
             </article>
           ) : null}
 
@@ -416,3 +412,4 @@ export function ResultPanel({
     </section>
   )
 }
+

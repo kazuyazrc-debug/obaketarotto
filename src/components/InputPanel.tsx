@@ -1,4 +1,4 @@
-import type { IntentSupport } from '../data/intentSupport'
+﻿import type { IntentSupport } from '../data/intentSupport'
 import {
   intentOptions,
   timeframeOptions,
@@ -22,6 +22,28 @@ type InputPanelProps = {
   onDraw: () => void
   onQuestionTemplate: (template: string) => void
   onUpdateField: <K extends keyof ReadingInput>(key: K, value: ReadingInput[K]) => void
+}
+
+const questionLabels: Record<IntentCategory, string> = {
+  恋愛: 'いま、恋愛で占いたいこと',
+  仕事: 'いま、仕事で占いたいこと',
+  人間関係: 'いま、人間関係で占いたいこと',
+  配信活動: 'いま、配信活動で占いたいこと',
+  創作: 'いま、創作で占いたいこと',
+  学業: 'いま、学業で占いたいこと',
+  メンタル: 'いま、気持ちの面で占いたいこと',
+  その他: 'いま、占いたいこと',
+}
+
+const questionPlaceholders: Record<IntentCategory, string> = {
+  恋愛: 'いま気になっていること、迷っていること、相手とのことなどを自由に書いてください。',
+  仕事: '仕事で気になっている流れ、判断、悩み、進め方などを自由に書いてください。',
+  人間関係: '誰かとの関係で気になっていることや、整理したい気持ちを自由に書いてください。',
+  配信活動: '配信の方向性、見せ方、続け方、反応への迷いなどを自由に書いてください。',
+  創作: '作りたいもの、進まない理由、次の一手などを自由に書いてください。',
+  学業: '勉強の進め方、目標、不安、迷いなどを自由に書いてください。',
+  メンタル: 'いまの心の重さや揺れ、整えたいことを自由に書いてください。',
+  その他: 'ジャンルを決めきれなくても大丈夫です。いま占いたいことを自由に書いてください。',
 }
 
 const timeframeDescriptions: Record<TimeframeOption, string> = {
@@ -76,6 +98,9 @@ export function InputPanel({
   onQuestionTemplate,
   onUpdateField,
 }: InputPanelProps) {
+  const questionLabel = questionLabels[form.intent]
+  const questionPlaceholder = questionPlaceholders[form.intent]
+
   return (
     <section className="panel form-panel">
       <div className="panel-head">
@@ -160,7 +185,7 @@ export function InputPanel({
         <div className="intent-support-head">
           <div>
             <p className="guidance-title">書き方の導き</p>
-            <p className="intent-support-note">{currentSupport.note}</p>
+            <p className="intent-support-note">以下のように占いたいことを思うままに書いてください👻</p>
             <p className="intent-context-hint">{buildIntentTimeframeHint(form.intent, form.timeframe)}</p>
           </div>
         </div>
@@ -179,12 +204,12 @@ export function InputPanel({
       </div>
 
       <label className="block-field primary-field">
-        {currentSupport.questionLabel}
+        {questionLabel}
         <textarea
           rows={4}
           value={form.question}
           onChange={(event) => onUpdateField('question', event.target.value)}
-          placeholder={currentSupport.questionPlaceholder}
+          placeholder={questionPlaceholder}
         />
       </label>
 
@@ -250,3 +275,5 @@ export function InputPanel({
     </section>
   )
 }
+
+
