@@ -206,8 +206,28 @@ export function InputPanel({
         />
       </label>
 
-      <details className="details-panel">
-        <summary>詳細設定をひらく</summary>
+      <div className="ritual-field-display spread-display-bottom">
+        <span className="mini-label">Spread</span>
+        <strong>{currentSpread.name}</strong>
+        <p>{currentSpread.description}</p>
+        <div className="spread-position-row" aria-label="六芒スプレッドの配置">
+          {currentSpread.positions.map((position) => (
+            <span key={position}>{position}</span>
+          ))}
+        </div>
+      </div>
+
+      <button
+        className="draw-button ritual-button"
+        type="button"
+        onClick={onDraw}
+        disabled={!form.question.trim() || isLoading || isRitualActive}
+      >
+        {isLoading || isRitualActive ? '儀式を整えています…' : '六芒の儀を始める'}
+      </button>
+
+      <details className="details-panel details-panel-subtle">
+        <summary>詳細設定</summary>
 
         <div className="toggle-row advanced-toggle-row">
           <label>
@@ -239,26 +259,6 @@ export function InputPanel({
           </label>
         ) : null}
       </details>
-
-      <div className="ritual-field-display spread-display-bottom">
-        <span className="mini-label">Spread</span>
-        <strong>{currentSpread.name}</strong>
-        <p>{currentSpread.description}</p>
-        <div className="spread-position-row" aria-label="六芒スプレッドの配置">
-          {currentSpread.positions.map((position) => (
-            <span key={position}>{position}</span>
-          ))}
-        </div>
-      </div>
-
-      <button
-        className="draw-button ritual-button"
-        type="button"
-        onClick={onDraw}
-        disabled={!form.question.trim() || isLoading || isRitualActive}
-      >
-        {isLoading || isRitualActive ? '儀式を整えています…' : '六芒の儀を始める'}
-      </button>
     </section>
   )
 }

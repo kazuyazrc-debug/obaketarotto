@@ -147,6 +147,67 @@ export function ResultPanel({
 
       {latestReading ? (
         <>
+          <div className="hexagram-card">
+            <div className="hexagram-head">
+              <div>
+                <p className="mini-label">Sixfold Map</p>
+                <h3>六芒星の配置</h3>
+              </div>
+              <p className="hexagram-note">選ばれた札がどの位置に立ったかを、先に全体図で見渡せます。</p>
+            </div>
+
+            <div className="hexagram-map" aria-label="六芒星のカード配置">
+              <svg
+                className="hexagram-lines"
+                viewBox="0 0 100 100"
+                role="presentation"
+                aria-hidden="true"
+              >
+                <polygon points="50,10 23,58 77,58" />
+                <polygon points="50,90 23,42 77,42" />
+                <circle cx="50" cy="50" r="5.5" />
+              </svg>
+
+              <div className="hexagram-core">
+                <span>六芒星</span>
+                <strong>{latestReading.spread.name}</strong>
+              </div>
+
+              {hexagramLabels.map((label, index) => {
+                const position = latestReading.positions.find((entry) => entry.label === label)
+                if (!position) return null
+
+                return (
+                  <div
+                    key={`hexagram-${label}-${position.cardNo}`}
+                    className={[
+                      'hexagram-node',
+                      hexagramNodeClass[label],
+                      position.cardNo === latestReading.keyCardNo ? 'is-key-node' : '',
+                      hoveredLabel === position.label ? 'is-linked-active' : '',
+                      hoveredLabel && hoveredLabel !== position.label ? 'is-linked-dim' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    style={{ animationDelay: `${0.14 + index * 0.08}s` }}
+                    tabIndex={0}
+                    onMouseEnter={() => handleHexagramEnter(position.label as HexagramLabel)}
+                    onMouseLeave={clearHexagramHover}
+                    onFocus={() => handleHexagramEnter(position.label as HexagramLabel)}
+                    onBlur={clearHexagramHover}
+                  >
+                    <span className="hexagram-label">{position.label}</span>
+                    <strong className="hexagram-cardline">
+                      <span className="hexagram-cardno">{position.cardNo}.</span>
+                      <span className="hexagram-cardname">{position.cardName}</span>
+                    </strong>
+                    <small className="hexagram-role">{position.roleLabel}</small>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
           <div className="summary-card total-comment-card">
             <p className="summary-label">星巡りの帰結と次章</p>
             <div className="total-flow-grid">
@@ -226,66 +287,6 @@ export function ResultPanel({
               </article>
             </div>
           ) : null}
-
-          <div className="hexagram-card">
-            <div className="hexagram-head">
-              <div>
-                <p className="mini-label">Sixfold Map</p>
-                <h3>六芒星の配置</h3>
-              </div>
-              <p className="hexagram-note">選ばれた札がどの位置に立ったかを、先に全体図で見渡せます。</p>
-            </div>
-
-            <div className="hexagram-map" aria-label="六芒星のカード配置">
-              <svg
-                className="hexagram-lines"
-                viewBox="0 0 100 100"
-                role="presentation"
-                aria-hidden="true"
-              >
-                <polygon points="50,10 23,58 77,58" />
-                <polygon points="50,90 23,42 77,42" />
-                <circle cx="50" cy="50" r="5.5" />
-              </svg>
-
-              <div className="hexagram-core">
-                <span>六芒星</span>
-                <strong>{latestReading.spread.name}</strong>
-              </div>
-
-              {hexagramLabels.map((label, index) => {
-                const position = latestReading.positions.find((entry) => entry.label === label)
-                if (!position) return null
-
-                return (
-                  <div
-                    key={`hexagram-${label}-${position.cardNo}`}
-                    className={[
-                      'hexagram-node',
-                      hexagramNodeClass[label],
-                      position.cardNo === latestReading.keyCardNo ? 'is-key-node' : '',
-                      hoveredLabel === position.label ? 'is-linked-active' : '',
-                      hoveredLabel && hoveredLabel !== position.label ? 'is-linked-dim' : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={{ animationDelay: `${0.14 + index * 0.08}s` }}
-                    tabIndex={0}
-                    onMouseEnter={() => handleHexagramEnter(position.label as HexagramLabel)}
-                    onMouseLeave={clearHexagramHover}
-                    onFocus={() => handleHexagramEnter(position.label as HexagramLabel)}
-                    onBlur={clearHexagramHover}
-                  >
-                    <span className="hexagram-label">{position.label}</span>
-                    <strong>
-                      {position.cardNo}. {position.cardName}
-                    </strong>
-                    <small>{position.roleLabel}</small>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
 
           <div className="key-card">
             <div>

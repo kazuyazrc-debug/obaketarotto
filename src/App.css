@@ -253,6 +253,20 @@
   margin-bottom: 18px;
 }
 
+.form-panel > * + * {
+  margin-top: 16px;
+}
+
+.form-panel .panel-head,
+.form-panel .field-grid,
+.form-panel .intent-support-card,
+.form-panel .block-field,
+.form-panel .ritual-field-display,
+.form-panel .draw-button,
+.form-panel .details-panel {
+  margin-top: 0;
+}
+
 .panel-head h2 {
   font-family: var(--heading);
   font-size: clamp(1.34rem, 1.8vw, 1.72rem);
@@ -517,6 +531,22 @@ button:focus-visible {
     inset 0 1px 0 rgba(255, 255, 255, 0.62);
 }
 
+.ritual-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.ritual-button::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.24), transparent 38%, rgba(255, 241, 209, 0.14) 62%, transparent 100%);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
 .draw-button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -737,7 +767,7 @@ button:focus-visible {
 }
 
 .spread-display-bottom {
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .spread-position-row {
@@ -796,6 +826,30 @@ button:focus-visible {
 
 .details-panel[open] summary {
   margin-bottom: 14px;
+}
+
+.details-panel-subtle {
+  margin-top: 12px;
+  padding: 12px 14px 14px;
+  border-color: rgba(121, 133, 165, 0.1);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 20%),
+    rgba(237, 241, 249, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 6px 16px rgba(45, 53, 75, 0.04);
+}
+
+.details-panel-subtle summary {
+  font-size: 0.88rem;
+  color: rgba(62, 72, 96, 0.86);
+  font-weight: 500;
+}
+
+.details-panel-subtle[open] {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.28), transparent 22%),
+    rgba(239, 243, 250, 0.5);
 }
 
 .advanced-toggle-row {
@@ -878,6 +932,19 @@ button:focus-visible {
     inset 0 0 0 18px rgba(255, 255, 255, 0.02),
     0 0 50px rgba(166, 177, 238, 0.08);
   pointer-events: none;
+}
+
+.selection-fan::after {
+  content: '';
+  position: absolute;
+  inset: 50px 18% 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 223, 192, 0.08);
+  box-shadow:
+    0 0 36px rgba(196, 181, 136, 0.06),
+    inset 0 0 24px rgba(190, 200, 255, 0.04);
+  pointer-events: none;
+  animation: ritualPulse 6.8s ease-in-out infinite;
 }
 
 .choice-card {
@@ -1334,6 +1401,22 @@ button:focus-visible {
   font-weight: 500;
 }
 
+.hexagram-cardline {
+  display: inline-flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hexagram-cardno {
+  opacity: 0.84;
+}
+
+.hexagram-cardname {
+  display: inline-block;
+}
+
 .hexagram-node small,
 .hexagram-label {
   color: rgba(210, 218, 245, 0.78);
@@ -1349,6 +1432,10 @@ button:focus-visible {
 .hexagram-node small {
   font-family: var(--decorative);
   font-size: 0.82rem;
+}
+
+.hexagram-role {
+  transition: opacity 0.22s ease;
 }
 
 .hexagram-node::before {
@@ -1870,6 +1957,14 @@ button:focus-visible {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
 }
 
+.result-buttons .ghost-button {
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.32), transparent 34%),
+    rgba(232, 223, 198, 0.1);
+  color: rgba(247, 243, 234, 0.94);
+  border: 1px solid rgba(222, 211, 181, 0.12);
+}
+
 .history-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1974,6 +2069,18 @@ button:focus-visible {
   }
   50% {
     translate: 0 -10px;
+  }
+}
+
+@keyframes ritualPulse {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.985);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.015);
   }
 }
 
@@ -2131,26 +2238,107 @@ button:focus-visible {
   }
 
   .hexagram-map {
-    min-height: auto;
-    padding: 16px;
-    display: grid;
-    gap: 12px;
+    min-height: 390px;
+    padding: 18px;
+    display: block;
   }
 
   .hexagram-lines,
   .hexagram-core {
-    display: none;
+    display: block;
+  }
+
+  .hexagram-lines {
+    inset: 24px;
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+  }
+
+  .hexagram-core {
+    min-width: 96px;
+    padding: 10px 12px;
+  }
+
+  .hexagram-core span {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+
+  .hexagram-core strong {
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
   }
 
   .hexagram-node {
-    position: static;
-    transform: none;
-    width: 100%;
-    animation-name: revealRiseStatic;
+    width: 110px;
+    padding: 10px 9px 9px;
+    border-radius: 18px;
+    animation-name: revealRise;
+  }
+
+  .hexagram-node strong {
+    font-size: 0.72rem;
+    line-height: 1.22;
+  }
+
+  .hexagram-node small {
+    font-size: 0.68rem;
+  }
+
+  .hexagram-label {
+    font-size: 0.54rem;
+    letter-spacing: 0.16em;
   }
 
   .hexagram-node.is-linked-active {
-    transform: scale(1.01);
+    transform: translate(-50%, -50%) scale(1.01);
+  }
+
+  .node-top {
+    left: 50%;
+    top: 13%;
+  }
+
+  .node-upper-left {
+    left: 28%;
+    top: 34%;
+  }
+
+  .node-upper-right {
+    left: 72%;
+    top: 34%;
+  }
+
+  .node-lower-left {
+    left: 28%;
+    top: 66%;
+  }
+
+  .node-lower-right {
+    left: 72%;
+    top: 66%;
+  }
+
+  .node-bottom {
+    left: 50%;
+    top: 87%;
+  }
+
+  .hexagram-cardname,
+  .hexagram-role {
+    display: none;
+  }
+
+  .hexagram-node.is-linked-active .hexagram-cardname,
+  .hexagram-node:focus-visible .hexagram-cardname,
+  .hexagram-node.is-key-node .hexagram-cardname {
+    display: inline;
+  }
+
+  .hexagram-node.is-linked-active .hexagram-role,
+  .hexagram-node:focus-visible .hexagram-role,
+  .hexagram-node.is-key-node .hexagram-role {
+    display: block;
   }
 
   .selection-fan {
@@ -2163,6 +2351,10 @@ button:focus-visible {
 
   .selection-fan::before {
     display: none;
+  }
+
+  .selection-fan::after {
+    inset: 28px 16% 32px;
   }
 
   .choice-card {
@@ -2257,6 +2449,10 @@ button:focus-visible {
     padding: 12px;
   }
 
+  .details-panel-subtle {
+    padding: 10px 12px 12px;
+  }
+
   .draw-button {
     min-height: 54px;
   }
@@ -2264,6 +2460,59 @@ button:focus-visible {
   .selection-fan {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+  }
+
+  .hexagram-map {
+    min-height: 338px;
+    padding: 14px;
+  }
+
+  .hexagram-lines {
+    inset: 18px;
+    width: calc(100% - 36px);
+    height: calc(100% - 36px);
+  }
+
+  .hexagram-core {
+    min-width: 86px;
+    padding: 8px 10px;
+  }
+
+  .hexagram-core strong {
+    font-size: 0.74rem;
+  }
+
+  .hexagram-node {
+    width: 92px;
+    padding: 8px 7px;
+    border-radius: 16px;
+  }
+
+  .hexagram-node strong {
+    font-size: 0.64rem;
+  }
+
+  .hexagram-node small {
+    font-size: 0.6rem;
+  }
+
+  .hexagram-label {
+    font-size: 0.48rem;
+    letter-spacing: 0.12em;
+  }
+
+  .node-upper-left,
+  .node-lower-left {
+    left: 26%;
+  }
+
+  .node-upper-right,
+  .node-lower-right {
+    left: 74%;
+  }
+
+  .selection-fan::after {
+    inset: 20px 14% 28px;
   }
 
   .stage-card {

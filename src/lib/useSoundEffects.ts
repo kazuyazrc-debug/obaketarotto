@@ -4,7 +4,7 @@ type SoundEffectName = 'select' | 'shuffle' | 'result' | 'hover' | 'share'
 
 const SOUND_STORAGE_KEY = 'obake-tarot-sound'
 const BGM_SRC = '/audio/tarot-bgm.mp3'
-const BGM_VOLUME = 0.025
+const BGM_VOLUME = 0.018
 
 export function useSoundEffects() {
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -71,7 +71,7 @@ export function useSoundEffects() {
       audioContextRef.current = context
 
       const masterGain = context.createGain()
-      masterGain.gain.value = 0.18
+      masterGain.gain.value = 0.22
       masterGain.connect(context.destination)
       masterGainRef.current = masterGain
       noiseBufferRef.current = createNoiseBuffer(context)
