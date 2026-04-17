@@ -844,11 +844,13 @@ button:focus-visible {
 .details-panel-subtle summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
+  width: 100%;
   font-size: 0.84rem;
   color: rgba(72, 82, 106, 0.74);
   font-weight: 500;
+  text-align: center;
 }
 
 .details-panel-subtle[open] {
