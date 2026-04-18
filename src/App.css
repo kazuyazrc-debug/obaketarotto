@@ -2541,20 +2541,20 @@ button:focus-visible {
     top: 87%;
   }
 
-  .hexagram-cardname,
-  .hexagram-role {
+  .hexagram-cardline {
+    display: grid;
+    gap: 2px;
+  }
+
+  .hexagram-cardno {
     display: none;
   }
 
-  .hexagram-node.is-linked-active .hexagram-cardname,
-  .hexagram-node:focus-visible .hexagram-cardname,
-  .hexagram-node.is-key-node .hexagram-cardname {
+  .hexagram-cardname {
     display: inline;
   }
 
-  .hexagram-node.is-linked-active .hexagram-role,
-  .hexagram-node:focus-visible .hexagram-role,
-  .hexagram-node.is-key-node .hexagram-role {
+  .hexagram-role {
     display: block;
   }
 
