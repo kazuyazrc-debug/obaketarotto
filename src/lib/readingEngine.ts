@@ -238,8 +238,8 @@ function buildPositionResult(
     motif: card.motif,
     reversed: drawnCard.reversed,
     short: `${card.shortLine}${drawnCard.reversed ? ' 影の出方も合わせて意識したい場面です。' : ''}`,
-    medium: `${position.label}に出たのは ${card.arcana} / ${card.person} です。この位置は「${position.prompt}」を表しており、今回は ${card.role} として ${card.motif} が強く働いています。つまり、${tone} ${actionLine}`,
-    long: `${position.label}に出たのは ${card.arcana} / ${card.person} です。この位置は「${position.prompt}」を示しています。今回の読みでは、${card.role} として ${card.motif} が前面に出ており、意味としては「${card.shortLine}」に近い流れです。${stanceLine} ${input.intent}の読みでは「${intentAngle[input.intent]}」を意識して受け取ると解釈しやすく、時間軸は ${input.timeframe} なので、${timeframeAngle[input.timeframe]} として考えるのが現実的です。${actionLine}${secondActionLine}${backgroundLine}`,
+    medium: `${position.label}に出たのは ${card.arcana} です。この位置は「${position.prompt}」を表しており、今回は ${card.role} として ${card.motif} が強く働いています。つまり、${tone} ${actionLine}`,
+    long: `${position.label}に出たのは ${card.arcana} です。この位置は「${position.prompt}」を示しています。今回の読みでは、${card.role} として ${card.motif} が前面に出ており、意味としては「${card.shortLine}」に近い流れです。${stanceLine} ${input.intent}の読みでは「${intentAngle[input.intent]}」を意識して受け取ると解釈しやすく、時間軸は ${input.timeframe} なので、${timeframeAngle[input.timeframe]} として考えるのが現実的です。${actionLine}${secondActionLine}${backgroundLine}`,
   }
 }
 
