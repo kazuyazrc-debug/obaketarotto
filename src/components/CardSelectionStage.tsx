@@ -73,7 +73,10 @@ export function CardSelectionStage({
               ]
                 .filter(Boolean)
                 .join(' ')}
-              style={{ ['--slot' as string]: `${index - Math.floor(selectionCards.length / 2)}` }}
+              style={{
+                ['--slot' as string]: `${index - (selectionCards.length - 1) / 2}`,
+                ['--card-count' as string]: `${selectionCards.length}`,
+              }}
               disabled={!isChoosing}
               onClick={() => onChoose(card.no)}
             >

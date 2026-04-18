@@ -987,7 +987,8 @@ button:focus-visible {
 }
 
 .choice-card {
-  --offset: calc(var(--slot, 0) * 64px);
+  --fan-gap: clamp(44px, calc(330px / var(--card-count, 5)), 64px);
+  --offset: calc(var(--slot, 0) * var(--fan-gap));
   --rotation: calc(var(--slot, 0) * 8deg);
   position: absolute;
   top: 68px;

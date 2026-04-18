@@ -121,7 +121,7 @@ function App() {
     playShuffle()
     setNotice('')
     setSelectedCardNo(null)
-    setSelectionCards(pickSelectionCards(5))
+    setSelectionCards(pickSelectionCards(6))
     setRitualPhase('choosingCard')
   }
 
