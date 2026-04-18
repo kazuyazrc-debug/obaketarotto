@@ -1173,9 +1173,12 @@ button:focus-visible {
   overflow: hidden;
   border: 1px solid rgba(226, 233, 255, 0.16);
   background:
-    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.16), transparent 18%),
-    radial-gradient(circle at 50% 50%, var(--back-halo), transparent 28%),
-    linear-gradient(180deg, rgba(28, 34, 55, 0.96), rgba(14, 18, 31, 0.98));
+    linear-gradient(180deg, rgba(9, 11, 19, 0.18), rgba(9, 11, 19, 0.42)),
+    radial-gradient(circle at 50% 50%, var(--back-halo), transparent 32%),
+    url('/card-back.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   box-shadow:
     0 26px 50px rgba(4, 6, 14, 0.36),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
