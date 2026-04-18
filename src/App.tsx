@@ -16,7 +16,6 @@ import {
   type ReadingLength,
   type ReadingResult,
 } from './lib/reading'
-import { enhanceReadingWithAI } from './lib/ai'
 
 type RitualPhase = 'idle' | 'choosingCard' | 'chosenCardAnimating' | 'spreading' | 'complete'
 
@@ -41,8 +40,6 @@ const initialForm: ReadingInput = {
 }
 
 function App() {
-  const aiEnabled = import.meta.env.VITE_ENABLE_AI === 'true'
-  const useAiEnhancement = false
   const [activeLength, setActiveLength] = useState<ReadingLength>('medium')
   const [latestReading, setLatestReading] = useState<ReadingResult | null>(null)
   const [history, setHistory] = useState<ReadingResult[]>([])
@@ -65,10 +62,6 @@ function App() {
     startBgm,
     toggleSound,
   } = useSoundEffects()
-
-  useEffect(() => {
-    setExpandedCards({})
-  }, [latestReading?.id])
 
   useEffect(() => {
     if (!latestReading) {
@@ -144,7 +137,7 @@ function App() {
     setIsLoading(true)
 
     const preparedInput = prepareInput(form)
-    const baseReading = createReading(preparedInput, { anchorCardNo: cardNo })
+    const reading = createReading(preparedInput, { anchorCardNo: cardNo })
     const chosenDelay = prefersReducedMotion ? 0 : 340
     const totalRevealDelay = prefersReducedMotion ? 80 : 980
 
@@ -154,45 +147,21 @@ function App() {
 
     const startedAt = Date.now()
 
-    try {
-      const reading =
-        aiEnabled && useAiEnhancement
-          ? await enhanceReadingWithAI(preparedInput, baseReading)
-          : baseReading
-
-      const remaining = Math.max(0, totalRevealDelay - (Date.now() - startedAt))
-      if (remaining > 0) {
-        await wait(remaining)
-      }
-
-      setLatestReading(reading)
-      setHistory((current) => [reading, ...current].slice(0, 8))
-      setRitualPhase('complete')
-
-      if (aiEnabled && useAiEnhancement) {
-        setNotice('AI文章強化を使って読みを整えました。')
-      }
-    } catch (error) {
-      const remaining = Math.max(0, totalRevealDelay - (Date.now() - startedAt))
-      if (remaining > 0) {
-        await wait(remaining)
-      }
-
-      setLatestReading(baseReading)
-      setHistory((current) => [baseReading, ...current].slice(0, 8))
-      setRitualPhase('complete')
-      setNotice(
-        error instanceof Error
-          ? `AI文章強化は使えませんでしたが、占い結果そのものは通常どおり表示できています。必要ならこのまま読み進めて大丈夫です。${error.message}`
-          : 'AI文章強化は使えませんでしたが、占い結果そのものは通常どおり表示できています。必要ならこのまま読み進めて大丈夫です。',
-      )
-    } finally {
-      setIsLoading(false)
+    const remaining = Math.max(0, totalRevealDelay - (Date.now() - startedAt))
+    if (remaining > 0) {
+      await wait(remaining)
     }
+
+    setExpandedCards({})
+    setLatestReading(reading)
+    setHistory((current) => [reading, ...current].slice(0, 8))
+    setRitualPhase('complete')
+    setIsLoading(false)
   }
 
   function openHistoryItem(id: string) {
     const found = history.find((reading) => reading.id === id) ?? null
+    setExpandedCards({})
     setLatestReading(found)
     setSelectedCardNo(found?.anchorCardNo ?? null)
     setSelectionCards([])
@@ -201,6 +170,7 @@ function App() {
 
   function clearHistory() {
     setHistory([])
+    setExpandedCards({})
     setLatestReading(null)
     setSelectedCardNo(null)
     setSelectionCards([])

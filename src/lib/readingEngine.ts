@@ -167,8 +167,8 @@ export function createReading(
     keyCardNo: keyCard.cardNo,
     keyCardReason: keyCard.reason,
     pairFocus,
-    summary: buildSummary(positions, input, spread, keyCard.personLabel, pairFocus),
-    totalComment: buildTotalComment(positions, input, keyCard.personLabel),
+    summary: buildSummary(positions, input, spread, keyCard.roleLabel, pairFocus),
+    totalComment: buildTotalComment(positions, input, keyCard.roleLabel),
     positions,
     disclaimer: defaultDisclaimer,
     anchorCardNo: options.anchorCardNo ?? null,
@@ -268,16 +268,16 @@ function chooseKeyCard(positions: ReadingPositionResult[], spread: SpreadDefinit
 }
 
 function buildPairFocus(positions: ReadingPositionResult[]) {
-  const personCounts = positions.reduce<Record<string, number>>((acc, position) => {
-    acc[position.personLabel] = (acc[position.personLabel] ?? 0) + 1
+  const roleCounts = positions.reduce<Record<string, number>>((acc, position) => {
+    acc[position.roleLabel] = (acc[position.roleLabel] ?? 0) + 1
     return acc
   }, {})
 
-  return Object.entries(personCounts)
+  return Object.entries(roleCounts)
     .filter(([, count]) => count >= 2)
     .map(
-      ([person]) =>
-        `${person}の役回りが複数位置で重なっています。今回は一人の特性が別の場面にも連動して現れやすく、その人物性が読み全体の通しテーマになっています。`,
+      ([role]) =>
+        `${role}の気配が複数位置で重なっています。今回は同じ資質が別の場面にも連動して現れやすく、その性質が読み全体の通しテーマになっています。`,
     )
 }
 
@@ -285,13 +285,13 @@ function buildSummary(
   positions: ReadingPositionResult[],
   input: ReadingInput,
   spread: SpreadDefinition,
-  keyPerson: string,
+  keyRole: string,
   pairFocus: string[],
 ): Record<ReadingLength, string> {
   const arcanaFlow = positions.map((position) => position.cardName).join(' → ')
   const recipient = getRecipientLabel(input.nickname)
   const opening = `${recipient}への今回の読みは、${spread.name}に ${arcanaFlow} が並ぶ流れになりました。`
-  const keyLine = `中心には ${keyPerson} の役回りがあり、${intentAngle[input.intent]} を軸に現実へ落としていくと読みが活きます。`
+  const keyLine = `中心には ${keyRole} の気配があり、${intentAngle[input.intent]} を軸に現実へ落としていくと読みが活きます。`
   const relationLine = input.relationTheme
     ? `${input.relationType || '関係性のテーマ'} が含まれるため、相手を断定するより自分の選び方と距離感を整える読み方が向いています。`
     : ''
@@ -310,7 +310,7 @@ function buildSummary(
 function buildTotalComment(
   positions: ReadingPositionResult[],
   input: ReadingInput,
-  keyPerson: string,
+  keyRole: string,
 ) {
   const past = findPosition(positions, '過去')
   const now = findPosition(positions, '現在')
@@ -344,7 +344,7 @@ function buildTotalComment(
     .filter(Boolean)
     .join('')
 
-  const closing = `${style.action} いまは ${keyPerson} の気質を借りるつもりで、一度に全部を変えるのではなく、次に触れる一点を明確にすると前へ進みやすくなります。${style.closing}`
+  const closing = `${style.action} いまは ${keyRole} の姿勢を借りるつもりで、一度に全部を変えるのではなく、次に触れる一点を明確にすると前へ進みやすくなります。${style.closing}`
 
   return `${analysis}${strategy}${closing}`
 }

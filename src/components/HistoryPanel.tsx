@@ -47,7 +47,7 @@ export function HistoryPanel({ history, onClear, onOpenItem }: HistoryPanelProps
           })}
         </div>
       ) : (
-        <p className="history-empty">履歴はまだありません。結果はこの端末のブラウザ内に保存されます。</p>
+        <p className="history-empty">履歴はまだありません。この画面を開いている間だけ読み返せます。</p>
       )}
     </section>
   )

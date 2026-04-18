@@ -400,16 +400,6 @@ export function ResultPanel({
                 </article>
               )
             })}
-            {recommendedVtuber ? (
-              <article className="stage-recommendation-card">
-                <p className="mini-label">Bonus Pick</p>
-                <h3>あなたに今おすすめのVtuber</h3>
-                <p className="stage-recommendation-name">{recommendedVtuber}</p>
-                <p className="stage-recommendation-note">
-                  今夜の流れに寄り添う相手として、ふっと目に留まる名前です。気になったら、その空気感ごと受け取ってみてください。
-                </p>
-              </article>
-            ) : null}
           </div>
 
           {notice ? <p className="helper-note notice">{notice}</p> : null}
