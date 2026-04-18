@@ -8,6 +8,7 @@ import { SoundToggle } from './components/SoundToggle'
 import { intentSupport } from './data/intentSupport'
 import { cards, type CardDefinition } from './data/tarot'
 import { buildReadingShareBlob } from './lib/share'
+import { getMoonPhaseInfo } from './lib/ritualTheme'
 import { useSoundEffects } from './lib/useSoundEffects'
 import {
   buildReadingSnapshot,
@@ -29,6 +30,7 @@ const currentSpread = {
 
 const initialForm: ReadingInput = {
   nickname: '',
+  readingMode: 'quick',
   intent: '仕事',
   question: '',
   timeframe: '今週',
@@ -55,11 +57,11 @@ function App() {
     isAudioReady,
     isSoundEnabled,
     playHover,
+    primeAudio,
     playResult,
     playSelect,
     playShare,
     playShuffle,
-    startBgm,
     toggleSound,
   } = useSoundEffects()
 
@@ -83,6 +85,7 @@ function App() {
   }, [])
 
   const currentSupport = intentSupport[form.intent]
+  const moonPhase = getMoonPhaseInfo()
   const latestSnapshot = latestReading ? buildReadingSnapshot(latestReading) : null
   const keyPosition = latestReading?.positions.find(
     (position) => position.cardNo === latestReading.keyCardNo,
@@ -105,12 +108,12 @@ function App() {
     setExpandedCards((current) => ({ ...current, [cardKey]: !current[cardKey] }))
   }
 
-  function startRitual() {
+  async function startRitual() {
     if (!form.question.trim()) {
       return
     }
 
-    void startBgm()
+    await primeAudio()
     playShuffle()
     setNotice('')
     setSelectedCardNo(null)
@@ -129,7 +132,7 @@ function App() {
       return
     }
 
-    void startBgm()
+    await primeAudio()
     playSelect()
     setSelectedCardNo(cardNo)
     setRitualPhase('chosenCardAnimating')
@@ -211,7 +214,7 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell moon-phase-${moonPhase.tone}`}>
       <section className="hero-panel">
         <div className="hero-copy">
           <p className="eyebrow">Moonlit Ritual of nica House</p>
@@ -222,6 +225,9 @@ function App() {
             言葉より少し深い場所にある直感を、静かな手順で受け取れるように整えています。
           </p>
           <div className="hero-badges">
+            <span>
+              今夜の月相 {moonPhase.symbol} {moonPhase.label}
+            </span>
             <span>月光と銀のトーン</span>
             <span>六芒星スプレッド</span>
             <span>選んだ一枚から始まる儀式</span>
@@ -245,6 +251,7 @@ function App() {
           form={form}
           isLoading={isLoading}
           isRitualActive={isRitualActive}
+          moonPhaseLabel={moonPhase.label}
           onDraw={startRitual}
           onQuestionTemplate={applyQuestionTemplate}
           onUpdateField={updateField}
@@ -258,6 +265,7 @@ function App() {
             selectedCard={selectedCard}
             selectedCardNo={selectedCardNo}
             selectionCards={selectionCards}
+            moonPhaseLabel={moonPhase.label}
             onBack={cancelRitual}
             onChoose={handleChooseCard}
           />

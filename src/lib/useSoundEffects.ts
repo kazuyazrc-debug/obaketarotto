@@ -3,17 +3,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 type SoundEffectName = 'select' | 'shuffle' | 'result' | 'hover' | 'share'
 
 const SOUND_STORAGE_KEY = 'obake-tarot-sound'
-const BGM_SRC = '/audio/tarot-bgm.mp3'
-const BGM_VOLUME = 0.018
 
 export function useSoundEffects() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const masterGainRef = useRef<GainNode | null>(null)
   const noiseBufferRef = useRef<AudioBuffer | null>(null)
-  const bgmAudioRef = useRef<HTMLAudioElement | null>(null)
   const isSoundEnabledRef = useRef(true)
   const hasUnlockedAudioRef = useRef(false)
-  const hasBgmStartedRef = useRef(false)
   const [isSoundEnabled, setIsSoundEnabled] = useState(() => {
     if (typeof window === 'undefined') {
       return true
@@ -22,22 +18,6 @@ export function useSoundEffects() {
     return window.localStorage.getItem(SOUND_STORAGE_KEY) !== 'off'
   })
   const [isAudioReady, setIsAudioReady] = useState(false)
-
-  const ensureBgmAudio = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return null
-    }
-
-    if (!bgmAudioRef.current) {
-      const audio = new Audio(BGM_SRC)
-      audio.loop = true
-      audio.preload = 'none'
-      audio.volume = BGM_VOLUME
-      bgmAudioRef.current = audio
-    }
-
-    return bgmAudioRef.current
-  }, [])
 
   const createNoiseBuffer = useCallback((context: AudioContext) => {
     const duration = 0.42
@@ -81,8 +61,6 @@ export function useSoundEffects() {
       await context.resume()
     }
 
-    setIsAudioReady(true)
-    hasUnlockedAudioRef.current = true
     return context
   }, [createNoiseBuffer])
 
@@ -95,43 +73,7 @@ export function useSoundEffects() {
       return
     }
 
-    const handleFirstInteraction = () => {
-      void ensureAudioContext()
-    }
-
-    window.addEventListener('pointerdown', handleFirstInteraction, { once: true, passive: true })
-    window.addEventListener('keydown', handleFirstInteraction, { once: true })
-
-    return () => {
-      window.removeEventListener('pointerdown', handleFirstInteraction)
-      window.removeEventListener('keydown', handleFirstInteraction)
-    }
-  }, [ensureAudioContext])
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
     window.localStorage.setItem(SOUND_STORAGE_KEY, isSoundEnabled ? 'on' : 'off')
-  }, [isSoundEnabled])
-
-  useEffect(() => {
-    const audio = bgmAudioRef.current
-    if (!audio) {
-      return
-    }
-
-    audio.volume = BGM_VOLUME
-
-    if (!isSoundEnabled) {
-      audio.pause()
-      return
-    }
-
-    if (hasBgmStartedRef.current) {
-      void audio.play().catch(() => {})
-    }
   }, [isSoundEnabled])
 
   useEffect(() => {
@@ -140,18 +82,60 @@ export function useSoundEffects() {
       if (context) {
         void context.close()
       }
-
-      const audio = bgmAudioRef.current
-      if (audio) {
-        audio.pause()
-        audio.src = ''
-      }
     }
   }, [])
 
   const withMaster = useCallback((context: AudioContext) => {
     return masterGainRef.current ?? context.destination
   }, [])
+
+  const primeAudio = useCallback(async () => {
+    const context = await ensureAudioContext()
+    if (!context) {
+      return null
+    }
+
+    if (!hasUnlockedAudioRef.current) {
+      const unlockGain = context.createGain()
+      const unlockOscillator = context.createOscillator()
+
+      unlockGain.gain.value = 0.00001
+      unlockOscillator.type = 'sine'
+      unlockOscillator.frequency.value = 440
+      unlockOscillator.connect(unlockGain)
+      unlockGain.connect(withMaster(context))
+
+      const start = context.currentTime
+      unlockOscillator.start(start)
+      unlockOscillator.stop(start + 0.02)
+    }
+
+    setIsAudioReady(true)
+    hasUnlockedAudioRef.current = true
+    return context
+  }, [ensureAudioContext, withMaster])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const handleFirstInteraction = () => {
+      void primeAudio()
+    }
+
+    window.addEventListener('pointerdown', handleFirstInteraction, { once: true, passive: true })
+    window.addEventListener('touchstart', handleFirstInteraction, { once: true, passive: true })
+    window.addEventListener('click', handleFirstInteraction, { once: true, passive: true })
+    window.addEventListener('keydown', handleFirstInteraction, { once: true })
+
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstInteraction)
+      window.removeEventListener('touchstart', handleFirstInteraction)
+      window.removeEventListener('click', handleFirstInteraction)
+      window.removeEventListener('keydown', handleFirstInteraction)
+    }
+  }, [primeAudio])
 
   const playSelectSound = useCallback((context: AudioContext) => {
     const output = withMaster(context)
@@ -340,7 +324,7 @@ export function useSoundEffects() {
       return
     }
 
-    const context = await ensureAudioContext()
+    const context = await primeAudio()
     if (!context) {
       return
     }
@@ -366,32 +350,19 @@ export function useSoundEffects() {
     }
 
     playResultSound(context)
-  }, [ensureAudioContext, playHoverSound, playResultSound, playSelectSound, playShareSound, playShuffleSound])
-
-  const startBgm = useCallback(async () => {
-    if (!isSoundEnabledRef.current) {
-      return
-    }
-
-    await ensureAudioContext()
-
-    if (!hasUnlockedAudioRef.current) {
-      return
-    }
-
-    const audio = ensureBgmAudio()
-    if (!audio) {
-      return
-    }
-
-    audio.volume = BGM_VOLUME
-    hasBgmStartedRef.current = true
-    await audio.play().catch(() => {})
-  }, [ensureAudioContext, ensureBgmAudio])
+  }, [playHoverSound, playResultSound, playSelectSound, playShareSound, playShuffleSound, primeAudio])
 
   const toggleSound = useCallback(() => {
-    setIsSoundEnabled((current) => !current)
-  }, [])
+    setIsSoundEnabled((current) => {
+      const next = !current
+
+      if (next) {
+        void primeAudio()
+      }
+
+      return next
+    })
+  }, [primeAudio])
 
   const playSelect = useCallback(() => {
     void play('select')
@@ -421,7 +392,7 @@ export function useSoundEffects() {
     playSelect,
     playShare,
     playShuffle,
-    startBgm,
+    primeAudio,
     toggleSound,
   }
 }

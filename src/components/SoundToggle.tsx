@@ -16,9 +16,8 @@ export function SoundToggle({ isAudioReady, isSoundEnabled, onToggle }: SoundTog
       <span className="sound-toggle-dot" aria-hidden="true" />
       <span className="sound-toggle-copy">
         <strong>{isSoundEnabled ? 'Sound ON' : 'Sound OFF'}</strong>
-        <small>{isAudioReady ? 'BGM / 効果音' : 'タップで準備'}</small>
+        <small>{isAudioReady ? '効果音' : 'タップで準備'}</small>
       </span>
     </button>
   )
 }
-

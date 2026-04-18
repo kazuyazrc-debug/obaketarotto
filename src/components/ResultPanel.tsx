@@ -2,6 +2,7 @@
 import { TarotCardFace } from './TarotCardFace'
 import type { ReadingLength, ReadingResult, ReadingSnapshot } from '../lib/reading'
 import { getRecipientLabel, sanitizeReadingText } from '../lib/readingDisplay'
+import { buildCombinationTitle, getMoonPhaseInfo } from '../lib/ritualTheme'
 
 const hexagramNodeClass = {
   過去: 'node-top',
@@ -119,7 +120,9 @@ export function ResultPanel({
   const futurePosition = latestReading ? findPosition(latestReading, '未来') : undefined
   const recipientLabel = latestReading ? getRecipientLabel(latestReading.input.nickname) : 'あなた'
   const sanitize = (text: string) => sanitizeReadingText(text, latestReading)
-  const recommendedVtuber = latestReading ? pickRecommendedVtuber(latestReading) : null
+  const recommendedVtuber = latestReading ? pickRecommendedVtuber(latestReading) : ''
+  const combinationTitle = latestReading ? buildCombinationTitle(latestReading) : ''
+  const moonPhase = getMoonPhaseInfo(latestReading ? new Date(latestReading.createdAt) : new Date())
 
   function handleHexagramEnter(label: HexagramLabel) {
     setHoveredLabel((current) => {
@@ -210,6 +213,15 @@ export function ResultPanel({
 
           <div className="summary-card total-comment-card">
             <p className="summary-label">星巡りの帰結と次章</p>
+            <div className="ritual-title-band">
+              <div>
+                <p className="mini-label">Night Title</p>
+                <h3>{combinationTitle}</h3>
+              </div>
+              <p className="ritual-title-phase">
+                今夜の月相 {moonPhase.symbol} {moonPhase.label}
+              </p>
+            </div>
             <div className="total-flow-grid">
               <article className="total-flow-section">
                 <div className="total-flow-head">
@@ -297,6 +309,12 @@ export function ResultPanel({
             <p className="key-reason">{sanitize(latestReading.keyCardReason)}</p>
           </div>
 
+          <article className="stage-recommendation-card summary-recommendation-card">
+            <p className="mini-label">Bonus Pick</p>
+            <h3>あなたにおすすめのVtuber</h3>
+            <p className="stage-recommendation-name">{recommendedVtuber}</p>
+          </article>
+
           <div className="tab-row">
             {(['short', 'medium', 'long'] as ReadingLength[]).map((length) => (
               <button
@@ -309,14 +327,6 @@ export function ResultPanel({
               </button>
             ))}
           </div>
-
-          {recommendedVtuber ? (
-            <article className="stage-recommendation-card summary-recommendation-card">
-              <p className="mini-label">Bonus Pick</p>
-              <h3>あなたにおすすめのVtuber</h3>
-              <p className="stage-recommendation-name">{recommendedVtuber}</p>
-            </article>
-          ) : null}
 
           <div className="summary-card">
             <p className="summary-label">全体の読み取りについて</p>

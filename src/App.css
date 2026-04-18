@@ -20,6 +20,36 @@
   opacity: 0.9;
 }
 
+.app-shell.moon-phase-new::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(208, 221, 255, 0.08), transparent 18%),
+    radial-gradient(circle at 88% 4%, rgba(149, 162, 224, 0.08), transparent 20%);
+}
+
+.app-shell.moon-phase-crescent::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(244, 231, 196, 0.08), transparent 18%),
+    radial-gradient(circle at 88% 4%, rgba(159, 173, 255, 0.08), transparent 20%);
+}
+
+.app-shell.moon-phase-half::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(245, 233, 204, 0.1), transparent 18%),
+    radial-gradient(circle at 88% 4%, rgba(175, 188, 255, 0.09), transparent 20%);
+}
+
+.app-shell.moon-phase-gibbous::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 239, 212, 0.12), transparent 18%),
+    radial-gradient(circle at 88% 4%, rgba(179, 189, 255, 0.12), transparent 20%);
+}
+
+.app-shell.moon-phase-full::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 242, 216, 0.14), transparent 18%),
+    radial-gradient(circle at 88% 4%, rgba(194, 203, 255, 0.14), transparent 20%);
+}
+
 .hero-panel,
 .panel {
   border: 1px solid var(--border);
@@ -341,6 +371,7 @@
 
 .intent-context-hint {
   margin: 10px 0 0;
+  width: 100%;
   padding: 12px 14px;
   border-radius: 16px;
   background:
@@ -601,6 +632,82 @@ button:focus-visible {
   grid-column: 1 / -1;
 }
 
+.reading-mode-field {
+  grid-column: 1 / -1;
+  padding: 15px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(104, 117, 151, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(206, 216, 247, 0.18), transparent 22%),
+    linear-gradient(180deg, rgba(224, 231, 244, 0.86), rgba(206, 214, 231, 0.82));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 10px 22px rgba(40, 47, 66, 0.06);
+}
+
+.reading-mode-head {
+  display: grid;
+  gap: 4px;
+}
+
+.reading-mode-head span {
+  color: var(--text-strong);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.reading-mode-head small {
+  color: rgba(88, 98, 124, 0.88);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.reading-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.reading-mode-chip {
+  display: grid;
+  gap: 5px;
+  padding: 14px 15px;
+  border-radius: 18px;
+  border: 1px solid rgba(114, 127, 161, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.56), transparent 24%),
+    linear-gradient(180deg, rgba(248, 250, 255, 0.94), rgba(228, 233, 244, 0.86));
+  color: var(--text-strong);
+  text-align: left;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 12px 24px rgba(42, 48, 69, 0.08);
+}
+
+.reading-mode-chip strong {
+  font-size: 0.95rem;
+  line-height: 1.22;
+  letter-spacing: 0.01em;
+}
+
+.reading-mode-chip small {
+  color: rgba(82, 93, 119, 0.86);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.reading-mode-chip.active {
+  border-color: rgba(194, 176, 129, 0.4);
+  background:
+    radial-gradient(circle at top right, rgba(255, 250, 239, 0.66), transparent 22%),
+    linear-gradient(180deg, rgba(255, 250, 239, 0.98), rgba(236, 226, 204, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.74),
+    0 18px 34px rgba(92, 74, 40, 0.12),
+    0 0 0 1px rgba(241, 233, 209, 0.24);
+}
+
 .timeframe-field {
   gap: 14px;
 }
@@ -793,6 +900,25 @@ button:focus-visible {
   justify-content: space-between;
   gap: 16px;
   align-items: start;
+}
+
+.intent-support-head > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.support-phase-note {
+  margin: 0;
+  align-self: start;
+  padding: 8px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(117, 129, 164, 0.16);
+  background: rgba(240, 244, 251, 0.44);
+  color: rgba(71, 82, 105, 0.78);
+  font-family: var(--decorative);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 
 .compact-template-list {
@@ -1037,6 +1163,9 @@ button:focus-visible {
 }
 
 .choice-card-back {
+  --back-accent: rgba(215, 198, 161, 0.4);
+  --back-halo: rgba(215, 198, 161, 0.22);
+  --back-rotation: 0deg;
   position: relative;
   display: grid;
   place-items: center;
@@ -1045,7 +1174,7 @@ button:focus-visible {
   border: 1px solid rgba(226, 233, 255, 0.16);
   background:
     radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.16), transparent 18%),
-    radial-gradient(circle at 50% 50%, rgba(216, 199, 157, 0.12), transparent 28%),
+    radial-gradient(circle at 50% 50%, var(--back-halo), transparent 28%),
     linear-gradient(180deg, rgba(28, 34, 55, 0.96), rgba(14, 18, 31, 0.98));
   box-shadow:
     0 26px 50px rgba(4, 6, 14, 0.36),
@@ -1063,21 +1192,36 @@ button:focus-visible {
 }
 
 .choice-card-back::before {
-  border: 1px solid rgba(240, 228, 192, 0.16);
+  border: 1px solid var(--back-accent);
+  transform: rotate(var(--back-rotation));
 }
 
 .choice-card-back::after {
   inset: 28px;
   border: 1px solid rgba(222, 230, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 24px var(--back-halo);
 }
 
 .choice-card-rune {
   font-family: var(--decorative);
   font-size: clamp(1.6rem, 3vw, 2.2rem);
-  color: rgba(244, 232, 205, 0.94);
+  color: var(--back-accent);
   text-shadow:
-    0 0 14px rgba(244, 232, 205, 0.18),
+    0 0 14px var(--back-halo),
     0 0 24px rgba(188, 196, 255, 0.12);
+}
+
+.choice-card-phase {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(222, 228, 245, 0.68);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  font-family: var(--decorative);
 }
 
 .choice-card-caption {
@@ -1598,6 +1742,34 @@ button:focus-visible {
 
 .summary-recommendation-card {
   margin-bottom: 16px;
+}
+
+.ritual-title-band {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(216, 225, 255, 0.1);
+  background:
+    radial-gradient(circle at top right, rgba(255, 249, 229, 0.12), transparent 24%),
+    rgba(255, 255, 255, 0.04);
+}
+
+.ritual-title-band h3 {
+  margin-top: 6px;
+  color: rgba(250, 245, 235, 0.98);
+  font-size: clamp(1.1rem, 1.8vw, 1.34rem);
+  line-height: 1.18;
+}
+
+.ritual-title-phase {
+  color: rgba(224, 232, 248, 0.76);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: right;
 }
 
 .result-overview {
@@ -2207,6 +2379,10 @@ button:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .reading-mode-switch {
+    grid-template-columns: 1fr;
+  }
+
   .result-overview {
     grid-template-columns: 1fr;
   }
@@ -2278,6 +2454,7 @@ button:focus-visible {
   }
 
   .hexagram-map {
+    aspect-ratio: 1 / 1.05;
     min-height: 390px;
     padding: 18px;
     display: block;
@@ -2384,9 +2561,10 @@ button:focus-visible {
   .selection-fan {
     min-height: auto;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     padding: 8px 0 0;
+    align-items: stretch;
   }
 
   .selection-fan::before {
@@ -2402,6 +2580,11 @@ button:focus-visible {
     width: 100%;
     min-width: 0;
     transform: none;
+  }
+
+  .choice-card-back,
+  .choice-card-face {
+    min-height: 100%;
   }
 
   .choice-card.is-selected,
@@ -2489,6 +2672,21 @@ button:focus-visible {
     padding: 12px;
   }
 
+  .support-phase-note,
+  .ritual-title-phase {
+    white-space: normal;
+    text-align: left;
+  }
+
+  .intent-support-head {
+    display: grid;
+    gap: 10px;
+  }
+
+  .support-phase-note {
+    justify-self: start;
+  }
+
   .details-panel-subtle {
     margin-top: 20px;
     padding: 10px 12px 12px;
@@ -2510,11 +2708,12 @@ button:focus-visible {
   }
 
   .selection-fan {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
   }
 
   .hexagram-map {
+    aspect-ratio: 1 / 1.08;
     min-height: 338px;
     padding: 14px;
   }
@@ -2611,6 +2810,16 @@ button:focus-visible {
     font-size: 0.92rem;
   }
 
+  .reading-mode-field,
+  .ritual-title-band {
+    padding: 12px;
+  }
+
+  .support-phase-note {
+    padding: 7px 10px;
+    font-size: 0.68rem;
+  }
+
   .timeframe-chip small,
   .spread-stage-note,
   .hexagram-note,
@@ -2620,6 +2829,10 @@ button:focus-visible {
 
   .choice-card-back {
     min-height: 210px;
+  }
+
+  .selection-fan {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .stage-order-badge {

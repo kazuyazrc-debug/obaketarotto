@@ -1,8 +1,9 @@
 import { tarotCharacterBackup } from '../data/tarotCharacterBackup'
 import type { ReadingResult } from './reading'
 
-const knownCharacterNames = [...new Set(tarotCharacterBackup.map((card) => card.person).filter(Boolean))]
-  .sort((left, right) => right.length - left.length)
+const knownCharacterNames = buildCharacterNameIndex(
+  tarotCharacterBackup.map((card) => card.person).filter(Boolean),
+)
 
 export function getRecipientLabel(nickname?: string | null) {
   const trimmed = nickname?.trim()
@@ -27,16 +28,13 @@ export function sanitizeReadingText(
   const drawnNames = reading
     ? reading.positions.map((position) => position.personLabel).filter(Boolean)
     : []
-  const names = [...new Set([...knownCharacterNames, ...drawnNames])]
-    .sort((left, right) => right.length - left.length)
+  const names = buildCharacterNameIndex([...knownCharacterNames, ...drawnNames])
 
   let next = recipientLabel === 'あなた'
     ? text
     : text.replace(new RegExp(escapeRegExp(recipientLabel), 'g'), recipientToken)
 
-  for (const name of names) {
-    next = stripCharacterName(next, name)
-  }
+  next = sanitizeCharacterReferences(next, names)
 
   return next
     .replace(new RegExp(recipientToken, 'g'), recipientLabel)
@@ -48,6 +46,17 @@ export function sanitizeReadingText(
     .trim()
 }
 
+export function sanitizeCharacterReferences(text: string, extraNames: string[] = []) {
+  const names = buildCharacterNameIndex([...knownCharacterNames, ...extraNames])
+  let next = text
+
+  for (const name of names) {
+    next = stripCharacterName(next, name)
+  }
+
+  return next
+}
+
 function stripCharacterName(text: string, name: string) {
   const escaped = escapeRegExp(name)
 
@@ -56,6 +65,7 @@ function stripCharacterName(text: string, name: string) {
     .replace(new RegExp(`${escaped}のように`, 'g'), '')
     .replace(new RegExp(`${escaped}らしく`, 'g'), '')
     .replace(new RegExp(`${escaped}らしい`, 'g'), '')
+    .replace(new RegExp(`${escaped}らしさ`, 'g'), '')
     .replace(new RegExp(`${escaped}的`, 'g'), '')
     .replace(new RegExp(`\\s*\\/\\s*${escaped}`, 'g'), '')
     .replace(new RegExp(`${escaped}\\s*\\/\\s*`, 'g'), '')
@@ -65,4 +75,34 @@ function stripCharacterName(text: string, name: string) {
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function buildCharacterNameIndex(names: string[]) {
+  return [...new Set(names.flatMap((name) => buildCharacterAliases(name)).filter(Boolean))]
+    .sort((left, right) => right.length - left.length)
+}
+
+function buildCharacterAliases(name: string) {
+  const trimmed = name.trim()
+  if (!trimmed) {
+    return []
+  }
+
+  const aliases = new Set<string>([trimmed])
+  const kanaStart = trimmed.search(/[ぁ-んァ-ヶー]/)
+  if (kanaStart > 0) {
+    const suffix = trimmed.slice(kanaStart)
+    if (suffix.length >= 2) {
+      aliases.add(suffix)
+    }
+  }
+
+  if (trimmed.includes('の')) {
+    const afterNo = trimmed.split('の').pop()?.trim()
+    if (afterNo && afterNo.length >= 2) {
+      aliases.add(afterNo)
+    }
+  }
+
+  return [...aliases]
 }

@@ -41,7 +41,7 @@ const accentPalette = [
 ]
 
 function renderCenterGlyph(cardNo: number) {
-  switch (cardNo % 6) {
+  switch (cardNo % 11) {
     case 0:
       return (
         <>
@@ -116,6 +116,66 @@ function renderCenterGlyph(cardNo: number) {
           />
         </>
       )
+    case 5:
+      return (
+        <>
+          <path
+            d="M0 -34 L14 -6 L34 0 L14 6 L0 34 L-14 6 L-34 0 L-14 -6 Z"
+            fill="rgba(255,255,255,0.06)"
+            stroke="rgba(255,255,255,0.74)"
+            strokeWidth="1.6"
+          />
+          <circle r="10" fill="none" stroke="rgba(247,236,205,0.62)" />
+        </>
+      )
+    case 6:
+      return (
+        <>
+          <path
+            d="M-26 20 Q0 -34 26 20"
+            fill="rgba(255,255,255,0.08)"
+            stroke="rgba(255,255,255,0.72)"
+            strokeWidth="1.7"
+          />
+          <path d="M-20 -10 H20" fill="none" stroke="rgba(247,236,205,0.58)" strokeWidth="1.2" />
+        </>
+      )
+    case 7:
+      return (
+        <>
+          <polygon
+            points="0,-32 22,-12 32,14 0,30 -32,14 -22,-12"
+            fill="rgba(255,255,255,0.07)"
+            stroke="rgba(255,255,255,0.76)"
+            strokeWidth="1.7"
+          />
+          <circle r="8" fill="rgba(247,236,205,0.74)" opacity="0.82" />
+        </>
+      )
+    case 8:
+      return (
+        <>
+          <path
+            d="M0 -34 C18 -22 20 22 0 34 C-20 22 -18 -22 0 -34 Z"
+            fill="rgba(255,255,255,0.08)"
+            stroke="rgba(255,255,255,0.74)"
+            strokeWidth="1.7"
+          />
+          <path d="M-16 0 H16" fill="none" stroke="rgba(247,236,205,0.58)" strokeWidth="1.2" />
+        </>
+      )
+    case 9:
+      return (
+        <>
+          <circle r="28" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.72)" strokeWidth="1.6" />
+          <path
+            d="M-18 -18 L18 18 M18 -18 L-18 18"
+            fill="none"
+            stroke="rgba(247,236,205,0.58)"
+            strokeWidth="1.25"
+          />
+        </>
+      )
     default:
       return (
         <>
@@ -132,7 +192,7 @@ function renderCenterGlyph(cardNo: number) {
 }
 
 function renderLowerCrest(cardNo: number) {
-  switch (cardNo % 4) {
+  switch (cardNo % 6) {
     case 0:
       return (
         <>
@@ -166,6 +226,35 @@ function renderLowerCrest(cardNo: number) {
           />
         </>
       )
+    case 3:
+      return (
+        <>
+          <path
+            d="M92 290 Q120 262 148 290"
+            fill="none"
+            stroke="rgba(255,255,255,0.34)"
+            strokeWidth="1.6"
+          />
+          <circle cx="120" cy="284" r="4.2" fill="rgba(247,236,205,0.66)" />
+        </>
+      )
+    case 4:
+      return (
+        <>
+          <path
+            d="M92 286 L120 274 L148 286"
+            fill="none"
+            stroke="rgba(255,255,255,0.34)"
+            strokeWidth="1.7"
+          />
+          <path
+            d="M100 298 Q120 288 140 298"
+            fill="none"
+            stroke="rgba(247,236,205,0.52)"
+            strokeWidth="1.15"
+          />
+        </>
+      )
     default:
       return (
         <path
@@ -176,6 +265,64 @@ function renderLowerCrest(cardNo: number) {
         />
       )
   }
+}
+
+function renderFoilFrame(cardNo: number) {
+  switch (cardNo % 5) {
+    case 0:
+      return (
+        <>
+          <path d="M58 96 Q120 72 182 96" fill="none" stroke="rgba(247,236,205,0.22)" strokeWidth="1.1" />
+          <path d="M58 248 Q120 272 182 248" fill="none" stroke="rgba(247,236,205,0.18)" strokeWidth="1.1" />
+        </>
+      )
+    case 1:
+      return (
+        <>
+          <path d="M56 112 H184" fill="none" stroke="rgba(247,236,205,0.22)" strokeWidth="1.05" strokeDasharray="3 5" />
+          <path d="M56 236 H184" fill="none" stroke="rgba(247,236,205,0.16)" strokeWidth="1.05" strokeDasharray="5 6" />
+        </>
+      )
+    case 2:
+      return (
+        <>
+          <path d="M70 102 L120 84 L170 102" fill="none" stroke="rgba(247,236,205,0.22)" strokeWidth="1.05" />
+          <path d="M70 246 L120 264 L170 246" fill="none" stroke="rgba(247,236,205,0.18)" strokeWidth="1.05" />
+        </>
+      )
+    case 3:
+      return (
+        <>
+          <path d="M64 96 Q120 118 176 96" fill="none" stroke="rgba(247,236,205,0.2)" strokeWidth="1.05" />
+          <path d="M64 252 Q120 230 176 252" fill="none" stroke="rgba(247,236,205,0.17)" strokeWidth="1.05" />
+        </>
+      )
+    default:
+      return (
+        <>
+          <path d="M120 88 V108" fill="none" stroke="rgba(247,236,205,0.22)" strokeWidth="1.05" />
+          <path d="M120 242 V262" fill="none" stroke="rgba(247,236,205,0.18)" strokeWidth="1.05" />
+          <path d="M86 98 H154" fill="none" stroke="rgba(247,236,205,0.14)" strokeWidth="1.05" />
+          <path d="M86 252 H154" fill="none" stroke="rgba(247,236,205,0.14)" strokeWidth="1.05" />
+        </>
+      )
+  }
+}
+
+function buildConstellation(cardNo: number) {
+  const pointCount = 4 + (cardNo % 3)
+  const radius = 30 + (cardNo % 5) * 4
+
+  return Array.from({ length: pointCount }, (_, index) => {
+    const angle = (Math.PI * 2 * index) / pointCount + cardNo * 0.24
+    const secondary = index % 2 === 0 ? 1 : 0.72
+
+    return {
+      x: Math.cos(angle) * radius * secondary,
+      y: Math.sin(angle) * radius * secondary,
+      r: index === 0 ? 2.7 : 2,
+    }
+  })
 }
 
 export function TarotCardFace({
@@ -189,6 +336,7 @@ export function TarotCardFace({
   const orbitRotation = cardNo * 17
   const sigilRotation = cardNo * 11
   const starCount = 5 + (cardNo % 4)
+  const constellation = buildConstellation(cardNo)
   const stars = Array.from({ length: starCount }, (_, index) => {
     const angle = (Math.PI * 2 * index) / starCount + cardNo * 0.07
     return {
@@ -223,6 +371,7 @@ export function TarotCardFace({
         <rect x="20" y="20" width="200" height="340" rx="18" fill="none" stroke="rgba(255,255,255,0.45)" />
         <rect x="28" y="28" width="184" height="324" rx="14" fill="rgba(18,22,28,0.18)" stroke="rgba(255,255,255,0.15)" />
         <rect x="36" y="36" width="168" height="308" rx="12" fill="none" stroke="rgba(242,232,203,0.22)" />
+        {renderFoilFrame(cardNo)}
 
         <path d="M44 44 H80" fill="none" stroke="rgba(247,237,211,0.42)" strokeWidth="1.1" />
         <path d="M44 44 V80" fill="none" stroke="rgba(247,237,211,0.42)" strokeWidth="1.1" />
@@ -262,6 +411,29 @@ export function TarotCardFace({
             stroke="rgba(255,255,255,0.18)"
             strokeWidth="1.3"
           />
+        </g>
+
+        <g transform="translate(120 170)">
+          {constellation.length > 1 ? (
+            <path
+              d={constellation
+                .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
+                .join(' ')}
+              fill="none"
+              stroke="rgba(247,236,205,0.22)"
+              strokeWidth="1"
+            />
+          ) : null}
+          {constellation.map((point, index) => (
+            <circle
+              key={`constellation-${cardNo}-${index}`}
+              cx={point.x}
+              cy={point.y}
+              r={point.r}
+              fill="rgba(255,255,255,0.78)"
+              opacity={0.78 - index * 0.08}
+            />
+          ))}
         </g>
 
         <g transform={`translate(120 170) rotate(${sigilRotation})`}>

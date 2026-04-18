@@ -1,4 +1,5 @@
 import { TarotCardFace } from './TarotCardFace'
+import { getCardBackTheme } from '../lib/ritualTheme'
 
 type RitualPhase = 'idle' | 'choosingCard' | 'chosenCardAnimating' | 'spreading' | 'complete'
 
@@ -13,17 +14,19 @@ type RitualSelectionCard = {
 type CardSelectionStageProps = {
   currentIntent: string
   isLoading: boolean
+  moonPhaseLabel: string
   phase: RitualPhase
   selectedCard: RitualSelectionCard | null
   selectedCardNo: number | null
   selectionCards: RitualSelectionCard[]
   onBack: () => void
-  onChoose: (cardNo: number) => void
+  onChoose: (cardNo: number) => void | Promise<void>
 }
 
 export function CardSelectionStage({
   currentIntent,
   isLoading,
+  moonPhaseLabel,
   phase,
   selectedCard,
   selectedCardNo,
@@ -61,6 +64,7 @@ export function CardSelectionStage({
           const isSelected = selectedCardNo === card.no
           const isDimmed = selectedCardNo !== null && !isSelected
           const isFaceUp = isSelected && phase !== 'choosingCard'
+          const backTheme = getCardBackTheme(card.no)
 
           return (
             <button
@@ -76,6 +80,9 @@ export function CardSelectionStage({
               style={{
                 ['--slot' as string]: `${index - (selectionCards.length - 1) / 2}`,
                 ['--card-count' as string]: `${selectionCards.length}`,
+                ['--back-accent' as string]: backTheme.accent,
+                ['--back-halo' as string]: backTheme.halo,
+                ['--back-rotation' as string]: backTheme.rotation,
               }}
               disabled={!isChoosing}
               onClick={() => onChoose(card.no)}
@@ -91,7 +98,8 @@ export function CardSelectionStage({
                 </div>
               ) : (
                 <div className="choice-card-back">
-                  <span className="choice-card-rune">✦</span>
+                  <span className="choice-card-rune">{backTheme.rune}</span>
+                  <span className="choice-card-phase">{moonPhaseLabel}</span>
                   <span className="choice-card-caption">moonlit arcana</span>
                 </div>
               )}

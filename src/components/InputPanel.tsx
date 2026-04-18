@@ -7,6 +7,8 @@ import {
 } from '../data/tarot'
 import type { ReadingInput } from '../lib/reading'
 
+type ReadingMode = ReadingInput['readingMode']
+
 type SpreadPreview = {
   name: string
   description: string
@@ -19,9 +21,33 @@ type InputPanelProps = {
   form: ReadingInput
   isLoading: boolean
   isRitualActive: boolean
-  onDraw: () => void
+  moonPhaseLabel: string
+  onDraw: () => void | Promise<void>
   onQuestionTemplate: (template: string) => void
   onUpdateField: <K extends keyof ReadingInput>(key: K, value: ReadingInput[K]) => void
+}
+
+const readingModeCopy: Record<
+  ReadingMode,
+  {
+    title: string
+    lead: string
+    detail: string
+    rows: number
+  }
+> = {
+  quick: {
+    title: 'ひとことモード',
+    lead: '一文だけでも大丈夫です。重い日でも、今夜いちばん気になる輪郭だけ置けます。',
+    detail: '背景入力は省いて、短く直感的に進めます。',
+    rows: 3,
+  },
+  deep: {
+    title: 'しっかり相談モード',
+    lead: '背景や迷いの前後関係まで含めて、少し丁寧に読みたい時のモードです。',
+    detail: '補足の背景欄も使って、文脈ごと整えられます。',
+    rows: 5,
+  },
 }
 
 const questionLabels: Record<IntentCategory, string> = {
@@ -94,12 +120,19 @@ export function InputPanel({
   form,
   isLoading,
   isRitualActive,
+  moonPhaseLabel,
   onDraw,
   onQuestionTemplate,
   onUpdateField,
 }: InputPanelProps) {
   const questionLabel = questionLabels[form.intent]
-  const questionPlaceholder = questionPlaceholders[form.intent]
+  const questionPlaceholder =
+    form.readingMode === 'quick'
+      ? `${questionPlaceholders[form.intent]} 一文だけでも大丈夫です。`
+      : questionPlaceholders[form.intent]
+  const modeCopy = readingModeCopy[form.readingMode]
+  const visibleTemplates =
+    form.readingMode === 'quick' ? currentSupport.prompts.slice(0, 3) : currentSupport.prompts
 
   return (
     <section className="panel form-panel">
@@ -131,6 +164,36 @@ export function InputPanel({
             ))}
           </select>
         </label>
+
+        <div className="field-shell reading-mode-field">
+          <div className="reading-mode-head">
+            <span>相談モード</span>
+            <small>{modeCopy.detail}</small>
+          </div>
+          <div className="reading-mode-switch" role="radiogroup" aria-label="相談モード">
+            {(
+              [
+                ['quick', 'ひとことモード', '短く始める'],
+                ['deep', 'しっかり相談モード', '背景まで読む'],
+              ] as const
+            ).map(([mode, title, subtitle]) => {
+              const isActive = form.readingMode === mode
+
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  className={`reading-mode-chip${isActive ? ' active' : ''}`}
+                  aria-pressed={isActive}
+                  onClick={() => onUpdateField('readingMode', mode)}
+                >
+                  <strong>{title}</strong>
+                  <small>{subtitle}</small>
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
         <div className="field-shell timeframe-field">
           <div className="timeframe-head">
@@ -167,12 +230,13 @@ export function InputPanel({
         <div className="intent-support-head">
           <div>
             <p className="guidance-title">書き方の導き</p>
-            <p className="intent-support-note">以下のように占いたいことを思うままに書いてください👻</p>
+            <p className="intent-support-note">{modeCopy.lead}</p>
             <p className="intent-context-hint">{buildIntentTimeframeHint(form.intent, form.timeframe)}</p>
           </div>
+          <p className="support-phase-note">今夜の月相: {moonPhaseLabel}</p>
         </div>
         <div className="template-list compact-template-list">
-          {currentSupport.prompts.map((template) => (
+          {visibleTemplates.map((template) => (
             <button
               key={template}
               type="button"
@@ -188,23 +252,25 @@ export function InputPanel({
       <label className="block-field primary-field">
         {questionLabel}
         <textarea
-          rows={4}
+          rows={modeCopy.rows}
           value={form.question}
           onChange={(event) => onUpdateField('question', event.target.value)}
           placeholder={questionPlaceholder}
         />
       </label>
 
-      <label className="block-field">
-        {currentSupport.backgroundLabel}
-        <textarea
-          rows={4}
-          value={form.background}
-          maxLength={300}
-          onChange={(event) => onUpdateField('background', event.target.value)}
-          placeholder={currentSupport.backgroundPlaceholder}
-        />
-      </label>
+      {form.readingMode === 'deep' ? (
+        <label className="block-field">
+          {currentSupport.backgroundLabel}
+          <textarea
+            rows={4}
+            value={form.background}
+            maxLength={300}
+            onChange={(event) => onUpdateField('background', event.target.value)}
+            placeholder={currentSupport.backgroundPlaceholder}
+          />
+        </label>
+      ) : null}
 
       <div className="ritual-field-display spread-display-bottom">
         <span className="mini-label">Spread</span>

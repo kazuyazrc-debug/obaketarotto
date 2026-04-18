@@ -7,6 +7,7 @@ function createReadingFixture(): ReadingResult {
     createdAt: '2026-04-16T00:00:00.000Z',
     input: {
       nickname: 'テスト',
+      readingMode: 'deep',
       intent: '恋愛',
       question: '相手との距離感をどう整えるべき？',
       timeframe: '今週',
@@ -140,6 +141,7 @@ describe('buildReadingSnapshot', () => {
     const reading = createReading(
       {
         nickname: 'テスト',
+        readingMode: 'quick',
         intent: '仕事',
         question: '企画を通すために何を優先すべき？',
         timeframe: '今週',

@@ -9,7 +9,7 @@ import {
   type SpreadId,
   type TimeframeOption,
 } from '../data/tarot'
-import { getRecipientLabel } from './readingDisplay'
+import { getRecipientLabel, sanitizeCharacterReferences } from './readingDisplay'
 
 export type DrawnCard = {
   no: number
@@ -18,6 +18,7 @@ export type DrawnCard = {
 
 export type ReadingInput = {
   nickname: string
+  readingMode: 'quick' | 'deep'
   intent: IntentCategory
   question: string
   timeframe: TimeframeOption
@@ -214,10 +215,13 @@ function buildPositionResult(
     throw new Error(`Card ${drawnCard.no} not found`)
   }
 
-  const tone = drawnCard.reversed ? card.shadow : card.light
+  const cleanShortLine = sanitizeCharacterReferences(card.shortLine, [card.person])
+  const cleanLight = sanitizeCharacterReferences(card.light, [card.person])
+  const cleanShadow = sanitizeCharacterReferences(card.shadow, [card.person])
+  const tone = drawnCard.reversed ? cleanShadow : cleanLight
   const stanceLine = drawnCard.reversed
-    ? `逆位置なので、注意点としては「${card.shadow}」が強く出やすい状態です。`
-    : `正位置なので、「${card.light}」をそのまま活かしやすい状態です。`
+    ? `逆位置なので、注意点としては「${cleanShadow}」が強く出やすい状態です。`
+    : `正位置なので、「${cleanLight}」をそのまま活かしやすい状態です。`
   const backgroundLine = input.background
     ? `背景として「${summarizeBackground(input.background)}」という文脈も今回の読みに影を落としています。`
     : ''
@@ -237,9 +241,9 @@ function buildPositionResult(
     roleLabel: card.role,
     motif: card.motif,
     reversed: drawnCard.reversed,
-    short: `${card.shortLine}${drawnCard.reversed ? ' 影の出方も合わせて意識したい場面です。' : ''}`,
+    short: `${cleanShortLine}${drawnCard.reversed ? ' 影の出方も合わせて意識したい場面です。' : ''}`,
     medium: `${position.label}に出たのは ${card.arcana} です。この位置は「${position.prompt}」を表しており、今回は ${card.role} として ${card.motif} が強く働いています。つまり、${tone} ${actionLine}`,
-    long: `${position.label}に出たのは ${card.arcana} です。この位置は「${position.prompt}」を示しています。今回の読みでは、${card.role} として ${card.motif} が前面に出ており、意味としては「${card.shortLine}」に近い流れです。${stanceLine} ${input.intent}の読みでは「${intentAngle[input.intent]}」を意識して受け取ると解釈しやすく、時間軸は ${input.timeframe} なので、${timeframeAngle[input.timeframe]} として考えるのが現実的です。${actionLine}${secondActionLine}${backgroundLine}`,
+    long: `${position.label}に出たのは ${card.arcana} です。この位置は「${position.prompt}」を示しています。今回の読みでは、${card.role} として ${card.motif} が前面に出ており、意味としては「${cleanShortLine}」に近い流れです。${stanceLine} ${input.intent}の読みでは「${intentAngle[input.intent]}」を意識して受け取ると解釈しやすく、時間軸は ${input.timeframe} なので、${timeframeAngle[input.timeframe]} として考えるのが現実的です。${actionLine}${secondActionLine}${backgroundLine}`,
   }
 }
 
