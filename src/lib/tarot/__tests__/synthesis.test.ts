@@ -8,6 +8,7 @@ import {
   buildSynthesisSnapshot,
   buildSynthesisSummary,
   buildSynthesisTotalComment,
+  condenseText,
   resolveFragmentPool,
   type BuiltSynthesisSnapshot,
 } from '../synthesis'
@@ -178,6 +179,25 @@ function splitSentences(text: string) {
     .filter(Boolean)
 }
 
+describe('condenseText', () => {
+  it('returns the text as-is when within maxChars', () => {
+    expect(condenseText('短い文', 10)).toBe('短い文')
+  })
+
+  it('cuts at the last natural break within range without ellipsis', () => {
+    expect(condenseText('一つ目、二つ目、三つ目、四つ目', 10)).toBe('一つ目、二つ目')
+    expect(condenseText('一つ目、二つ目、三つ目、四つ目', 10).includes('…')).toBe(false)
+  })
+
+  it('falls back to ellipsis when no natural break is in the second half of maxChars', () => {
+    expect(condenseText('あいうえおかきくけこさしすせそ', 8)).toBe('あいうえおかき…')
+  })
+
+  it('falls back to ellipsis when the only break is too early', () => {
+    expect(condenseText('短、あいうえおかきくけこ', 10)).toBe('短、あいうえおかき…')
+  })
+})
+
 describe('synthesis layer', () => {
   it('is deterministic for the same input and seed', () => {
     const reading = createReadingFixture('恋愛', '今日', 'deep')
@@ -207,6 +227,14 @@ describe('synthesis layer', () => {
     expect(totalA.text).toBe(totalB.text)
     expect(summaryA.text).toBe(summaryB.text)
     expect(snapshotA.nextStep).toBe(snapshotB.nextStep)
+  })
+
+  it('keeps nextStep free of ellipsis with the new cue slot', () => {
+    for (let seed = 1; seed <= 100; seed += 1) {
+      const reading = createReadingFixture('恋愛', '今日', 'deep')
+      const snapshot = buildSynthesisSnapshot(reading, createSeededRng(seed + 9000))
+      expect(snapshot.nextStep.includes('…')).toBe(false)
+    }
   })
 
   it('keeps fragment ids and sentences deduplicated inside one total comment', () => {

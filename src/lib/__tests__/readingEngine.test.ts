@@ -88,10 +88,13 @@ describe('buildReadingSnapshot', () => {
       },
     )
 
+    const anchored = reading.positions.find((position) => position.cardNo === 17)
+
     expect(reading.anchorCardNo).toBe(17)
     expect(reading.keyCardNo).toBe(17)
+    expect(anchored).toBeDefined()
     expect(reading.keyCardReason).toBe(
-      '過去に置かれた星は、あなた自身の手で引き寄せた一枚であり、今回の読みの中心として静かに立っています。',
+      `${anchored?.label}に置かれた${anchored?.cardName}は、あなた自身の手で引き寄せた一枚であり、今回の読みの中心として静かに立っています。`,
     )
   })
 

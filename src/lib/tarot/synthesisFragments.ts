@@ -20,6 +20,7 @@ export type SynthesisSlot =
   | 'snapshot.headlineOpener'
   | 'snapshot.focusLead'
   | 'snapshot.nextStepLead'
+  | 'snapshot.nextStepCue'
   | 'snapshot.cautionLead'
   | 'snapshot.historyLineFormat'
   | 'summary.opener'
@@ -294,6 +295,27 @@ const snapshotNextStepLeads = createSeries('snapshot.nextStepLead', 'snapshot-ne
   '今夜の行動は多さではなく精度が大切で、ひとつ定めて静かに着手するだけでも十分です',
   '次章を開くなら、いま曖昧なまま残っている一点に名前をつけ、それに沿って動くのが自然です',
   'まずは読むだけで終えず、札が示した順番の最初の段を現実へ移すことが勧められています',
+])
+
+const snapshotNextStepCues = createSeries('snapshot.nextStepCue', 'snapshot-next-step-cue', [
+  '輪郭を一つだけ確かめる',
+  'ろうそくの火を絶やさない',
+  '月明かりの方へ歩幅を寄せる',
+  '古い手紙の一行を拾うこと',
+  '静けさを先に守ること',
+  '霧の奥で深呼吸する',
+  '水面の揺れを観る夜',
+  '囁きの向きを見失わない',
+  '淡い兆しを紙に移す',
+  '影に名前を与えない',
+  '次章の入口に手を置く',
+  '最初の段へ小さく着手',
+  '輪郭の外側を急がない',
+  '月明かりへ寄せる歩幅',
+  '古い手紙の余白',
+  '静けさへ戻る合図',
+  '水面の反射を見届ける',
+  '淡い熱を冷まさない',
 ])
 
 const snapshotCautionLeads = createSeries('snapshot.cautionLead', 'snapshot-caution', [
@@ -623,6 +645,7 @@ export const synthesisFragments: SynthesisFragment[] = [
   ...snapshotHeadlineOpeners,
   ...snapshotFocusLeads,
   ...snapshotNextStepLeads,
+  ...snapshotNextStepCues,
   ...snapshotCautionLeads,
   ...snapshotHistoryFormats,
   ...summaryOpeners,

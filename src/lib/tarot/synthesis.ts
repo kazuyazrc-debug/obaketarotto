@@ -597,34 +597,15 @@ export function buildSynthesisSnapshot(
       state,
       'snapshot.focus',
     )
-    const nextStepExcerpt = pickPositionSnippet(
-      context.method,
-      ['short', 'medium', 'long'],
-      'advice',
-      state,
-      10,
-      'snapshot.nextStep',
-    )
-    const mindsetCue = pickPositionSnippet(
-      context.mindset,
-      ['short', 'medium', 'long'],
-      'hidden',
-      state,
-      8,
-      'snapshot.nextStep',
-    )
-    const timeframeCue = condenseText(
-      pickSlotText('timeframeAngle', context, state, { debugSection: 'snapshot.nextStep' }),
-      6,
-    )
-    const futureCue = pickPositionSnippet(
-      context.future,
-      ['short', 'medium'],
-      'closing',
-      state,
-      6,
-      'snapshot.nextStep',
-    )
+    const nextStepCue1 = pickSlotText('snapshot.nextStepCue', context, state, {
+      debugSection: 'snapshot.nextStep',
+    })
+    const nextStepCue2 = pickSlotText('snapshot.nextStepCue', context, state, {
+      debugSection: 'snapshot.nextStep',
+    })
+    const nextStepCue3 = pickSlotText('snapshot.nextStepCue', context, state, {
+      debugSection: 'snapshot.nextStep',
+    })
     const cautionSource = reading.positions.find((position) => position.reversed)
       ?? context.future
     const cautionExcerpt = pickPositionSentence(
@@ -660,7 +641,7 @@ export function buildSynthesisSnapshot(
     const nextStep = finalizeParagraph(
       [
         pickSlotText('snapshot.nextStepLead', context, state, { debugSection: 'snapshot.nextStep' }),
-        `${nextStepExcerpt}・${mindsetCue}・${futureCue}・${timeframeCue}`,
+        `${nextStepCue1}・${nextStepCue2}・${nextStepCue3}`,
       ],
       reading,
     )
@@ -1015,14 +996,25 @@ function stripTrailingPunctuation(text: string): string {
   return text.trim().replace(/[。！？]+$/g, '')
 }
 
-function condenseText(text: string, maxChars: number) {
+export function condenseText(text: string, maxChars: number) {
   const trimmed = stripTrailingPunctuation(text).trim()
 
   if (trimmed.length <= maxChars) {
     return trimmed
   }
 
-  return `${trimmed.slice(0, Math.max(1, maxChars - 1)).trim()}…`
+  const sliced = trimmed.slice(0, maxChars)
+  const lastBreak = Math.max(
+    sliced.lastIndexOf('、'),
+    sliced.lastIndexOf('・'),
+    sliced.lastIndexOf('。'),
+  )
+
+  if (maxChars >= 8 && maxChars <= 12 && lastBreak >= Math.floor(maxChars / 2)) {
+    return sliced.slice(0, lastBreak).trim()
+  }
+
+  return `${sliced.slice(0, Math.max(1, maxChars - 1)).trim()}…`
 }
 
 function scoreSentence(
