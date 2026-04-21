@@ -132,7 +132,6 @@
 }
 
 .hexagram-card .mini-label,
-.key-card .mini-label,
 .total-comment-card .mini-label {
   color: rgba(234, 223, 191, 0.88);
   text-shadow: 0 0 14px rgba(210, 194, 156, 0.08);
@@ -314,7 +313,6 @@
 }
 
 .hexagram-card,
-.key-card,
 .summary-card,
 .pair-note,
 .empty-state,
@@ -1274,7 +1272,6 @@ button:focus-visible {
   color: rgba(213, 221, 244, 0.78);
 }
 
-.refined-overview .overview-card,
 .summary-card,
 .stage-card {
   border-color: rgba(133, 144, 176, 0.14);
@@ -1298,24 +1295,26 @@ button:focus-visible {
     0 0 24px rgba(220, 205, 168, 0.12);
 }
 
-.hexagram-node.is-key-node::after {
-  content: 'KEY';
+.hexagram-key-badge {
   position: absolute;
-  top: -10px;
-  right: 14px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(238, 227, 197, 0.92);
-  color: #4a3f2c;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
+  top: -7px;
+  right: -6px;
+  z-index: 2;
+  min-width: 34px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(225, 203, 142, 0.38);
+  background: rgba(19, 22, 36, 0.78);
+  color: #d4b87a;
   font-family: var(--decorative);
-}
-
-.key-card-line {
-  margin-top: 6px;
-  font-size: 1.06rem;
-  color: rgba(248, 241, 222, 0.9);
+  font-size: 0.65rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-align: center;
+  box-shadow:
+    0 8px 18px rgba(5, 7, 14, 0.22),
+    inset 0 1px 0 rgba(255, 246, 218, 0.12);
+  pointer-events: none;
 }
 
 .stage-card.is-key-stage {
@@ -1396,24 +1395,6 @@ button:focus-visible {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.key-card {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.26), transparent 24%),
-    linear-gradient(180deg, rgba(25, 31, 51, 0.9), rgba(39, 46, 69, 0.88));
-  border-color: rgba(193, 202, 247, 0.16);
-  color: rgba(240, 244, 255, 0.94);
-}
-
-.key-card h3 {
-  color: rgba(250, 247, 239, 0.98);
-  text-shadow: 0 0 18px rgba(215, 201, 165, 0.12);
-  font-size: clamp(1.28rem, 1.8vw, 1.62rem);
-  line-height: 1.12;
 }
 
 .hexagram-card {
@@ -1703,11 +1684,6 @@ button:focus-visible {
   color: var(--text-muted);
 }
 
-.key-card .role-line,
-.key-card .key-reason {
-  color: rgba(223, 230, 248, 0.78);
-}
-
 .stage-copy .role-line {
   color: #6a5a42;
 }
@@ -1716,7 +1692,6 @@ button:focus-visible {
   color: #4f5870;
 }
 
-.key-reason,
 .disclaimer,
 .history-empty,
 .position-topline {
@@ -1773,29 +1748,6 @@ button:focus-visible {
   font-size: 0.8rem;
   line-height: 1.6;
   text-align: right;
-}
-
-.result-overview {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 16px;
-}
-
-.overview-card {
-  padding: 18px;
-  border-radius: 22px;
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.48), transparent 22%),
-    linear-gradient(180deg, rgba(243, 246, 255, 0.94), rgba(227, 231, 244, 0.86));
-  border: 1px solid rgba(150, 159, 183, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
-}
-
-.overview-card h3 {
-  margin: 6px 0 8px;
-  font-size: 1.12rem;
-  line-height: 1.18;
 }
 
 .summary-card {
@@ -2472,10 +2424,6 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .result-overview {
-    grid-template-columns: 1fr;
-  }
-
   .spread-stage-head {
     display: grid;
   }
@@ -2580,6 +2528,14 @@ button:focus-visible {
     padding: 10px 9px 9px;
     border-radius: 18px;
     animation-name: revealRise;
+  }
+
+  .hexagram-key-badge {
+    top: -6px;
+    right: -5px;
+    min-width: 30px;
+    padding: 3px 6px;
+    font-size: 0.58rem;
   }
 
   .hexagram-node strong {
@@ -2747,10 +2703,8 @@ button:focus-visible {
   .intent-support-card,
   .details-panel,
   .summary-card,
-  .key-card,
   .hexagram-card,
   .total-flow-section,
-  .overview-card,
   .stage-recommendation-card {
     padding-left: 14px;
     padding-right: 14px;
@@ -2861,8 +2815,7 @@ button:focus-visible {
 
   .stage-copy h3,
   .total-flow-title,
-  .hexagram-head h3,
-  .key-card h3 {
+  .hexagram-head h3 {
     font-size: 1.08rem;
   }
 

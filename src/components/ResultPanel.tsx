@@ -255,6 +255,9 @@ export function ResultPanel({
                     onFocus={() => handleHexagramEnter(position.label as HexagramLabel)}
                     onBlur={clearHexagramHover}
                   >
+                    {position.cardNo === latestReading.keyCardNo ? (
+                      <span className="hexagram-key-badge" aria-label="鍵札">KEY</span>
+                    ) : null}
                     <span className="hexagram-label">{position.label}</span>
                     <strong className="hexagram-cardline">
                       <span className="hexagram-cardno">{position.cardNo}.</span>
@@ -339,30 +342,6 @@ export function ResultPanel({
                 共有画像を保存
               </button>
             </div>
-          </div>
-
-          {latestSnapshot ? (
-            <div className="result-overview refined-overview">
-              <article className="overview-card">
-                <p className="mini-label">Tonight</p>
-                <h3>今回の核</h3>
-                <p>{sanitize(latestSnapshot.headline)}</p>
-              </article>
-            </div>
-          ) : null}
-
-          <div className="key-card">
-            <div>
-              <p className="mini-label">Key Card</p>
-              <h3>今回の鍵札</h3>
-              <p className="key-card-line">
-                {latestReading.keyCardNo} / {keyPosition?.cardName}
-              </p>
-              <p className="role-line">
-                {keyPosition?.roleLabel} / {keyPosition?.motif}
-              </p>
-            </div>
-            <p className="key-reason">{sanitize(latestReading.keyCardReason)}</p>
           </div>
 
           <article className="stage-recommendation-card summary-recommendation-card">
