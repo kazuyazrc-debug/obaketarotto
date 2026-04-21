@@ -9,4 +9,7 @@ export default defineConfig({
       '/api': 'http://localhost:8787',
     },
   },
+  build: {
+    target: 'es2020',
+  },
 })
