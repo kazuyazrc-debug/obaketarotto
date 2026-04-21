@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import { TarotCardFace } from './TarotCardFace'
-import type { ReadingLength, ReadingResult, ReadingSnapshot } from '../lib/reading'
+import type { ReadingLength, ReadingResult, ReadingSnapshot, SynthesisDebugEntry } from '../lib/reading'
 import { getRecipientLabel, sanitizeReadingText } from '../lib/readingDisplay'
 import { buildCombinationTitle, getMoonPhaseInfo } from '../lib/ritualTheme'
 
@@ -21,6 +21,18 @@ const readingLengthLabel: Record<ReadingLength, string> = {
   short: '短く',
   medium: '標準',
   long: '深く',
+}
+
+const debugSectionLabel: Record<string, string> = {
+  totalComment: 'totalComment',
+  'summary.short': 'summary.short',
+  'summary.medium': 'summary.medium',
+  'summary.long': 'summary.long',
+  'snapshot.headline': 'snapshot.headline',
+  'snapshot.focus': 'snapshot.focus',
+  'snapshot.nextStep': 'snapshot.nextStep',
+  'snapshot.caution': 'snapshot.caution',
+  'snapshot.historyLine': 'snapshot.historyLine',
 }
 
 function findPosition(
@@ -64,6 +76,40 @@ function pickRecommendedVtuber(reading: ReadingResult) {
     reading.positions.reduce((total, position, index) => total + position.cardNo * (index + 3), 0)
 
   return recommendedVtubers[Math.abs(seed) % recommendedVtubers.length]
+}
+
+function buildDebugMeta(entry: SynthesisDebugEntry) {
+  if (entry.kind === 'fragment') {
+    return [entry.slot, entry.fragmentId].filter(Boolean).join(' / ')
+  }
+
+  return [
+    entry.positionLabel,
+    entry.cardName,
+    entry.readingLength,
+    entry.prefer,
+  ]
+    .filter(Boolean)
+    .join(' / ')
+}
+
+function renderDebugList(entries: SynthesisDebugEntry[]) {
+  return (
+    <div className="debug-trace-list">
+      {entries.map((entry, index) => (
+        <article
+          key={`${entry.section}-${entry.kind}-${entry.fragmentId ?? entry.cardName ?? 'entry'}-${index}`}
+          className="debug-trace-item"
+        >
+          <div className="debug-trace-head">
+            <strong>{entry.kind === 'fragment' ? 'fragment' : 'sentence'}</strong>
+            <span>{buildDebugMeta(entry)}</span>
+          </div>
+          <p>{entry.text}</p>
+        </article>
+      ))}
+    </div>
+  )
 }
 
 function buildNextChapterBody(
@@ -123,6 +169,16 @@ export function ResultPanel({
   const recommendedVtuber = latestReading ? pickRecommendedVtuber(latestReading) : ''
   const combinationTitle = latestReading ? buildCombinationTitle(latestReading) : ''
   const moonPhase = getMoonPhaseInfo(latestReading ? new Date(latestReading.createdAt) : new Date())
+  const isDev = import.meta.env.DEV
+  const totalCommentDebug = latestReading?.synthesisDebug?.totalComment ?? []
+  const summaryDebug = latestReading?.synthesisDebug?.summary?.[activeLength] ?? []
+  const snapshotDebug = latestSnapshot?.synthesisDebug ?? []
+  const snapshotDebugSections = Object.entries(
+    snapshotDebug.reduce<Record<string, SynthesisDebugEntry[]>>((accumulator, entry) => {
+      accumulator[entry.section] = [...(accumulator[entry.section] ?? []), entry]
+      return accumulator
+    }, {}),
+  )
 
   function handleHexagramEnter(label: HexagramLabel) {
     setHoveredLabel((current) => {
@@ -413,6 +469,29 @@ export function ResultPanel({
           </div>
 
           {notice ? <p className="helper-note notice">{notice}</p> : null}
+          {isDev ? (
+            <details className="debug-panel">
+              <summary>開発用: 合成 trace を表示</summary>
+              <div className="debug-panel-body">
+                <section className="debug-section">
+                  <h4>{debugSectionLabel.totalComment}</h4>
+                  {renderDebugList(totalCommentDebug)}
+                </section>
+
+                <section className="debug-section">
+                  <h4>{debugSectionLabel[`summary.${activeLength}`]}</h4>
+                  {renderDebugList(summaryDebug)}
+                </section>
+
+                {snapshotDebugSections.map(([section, entries]) => (
+                  <section key={section} className="debug-section">
+                    <h4>{debugSectionLabel[section] ?? section}</h4>
+                    {renderDebugList(entries)}
+                  </section>
+                ))}
+              </div>
+            </details>
+          ) : null}
           <p className="disclaimer">{latestReading.disclaimer}</p>
         </>
       ) : (

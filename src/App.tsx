@@ -9,6 +9,12 @@ import { intentSupport } from './data/intentSupport'
 import { cards, type CardDefinition } from './data/tarot'
 import { buildReadingShareBlob } from './lib/share'
 import { getMoonPhaseInfo } from './lib/ritualTheme'
+import {
+  appendReadingHistory,
+  clearReadingHistory,
+  readReadingHistory,
+} from './lib/tarot/history'
+import type { ReadingSnapshot as TarotReadingSnapshot } from './lib/tarot/types'
 import { useSoundEffects } from './lib/useSoundEffects'
 import {
   buildReadingSnapshot,
@@ -53,6 +59,9 @@ function App() {
   const [selectionCards, setSelectionCards] = useState<RitualSelectionCard[]>([])
   const [selectedCardNo, setSelectedCardNo] = useState<number | null>(null)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [generatorHistory, setGeneratorHistory] = useState<TarotReadingSnapshot[]>(() =>
+    readReadingHistory(),
+  )
   const {
     isAudioReady,
     isSoundEnabled,
@@ -140,7 +149,10 @@ function App() {
     setIsLoading(true)
 
     const preparedInput = prepareInput(form)
-    const reading = createReading(preparedInput, { anchorCardNo: cardNo })
+    const reading = createReading(preparedInput, {
+      anchorCardNo: cardNo,
+      history: generatorHistory,
+    })
     const chosenDelay = prefersReducedMotion ? 0 : 340
     const totalRevealDelay = prefersReducedMotion ? 80 : 980
 
@@ -158,6 +170,9 @@ function App() {
     setExpandedCards({})
     setLatestReading(reading)
     setHistory((current) => [reading, ...current].slice(0, 8))
+    setGeneratorHistory((current) =>
+      appendReadingHistory(current, reading.generatedHistorySnapshots),
+    )
     setRitualPhase('complete')
     setIsLoading(false)
   }
@@ -173,6 +188,8 @@ function App() {
 
   function clearHistory() {
     setHistory([])
+    clearReadingHistory()
+    setGeneratorHistory([])
     setExpandedCards({})
     setLatestReading(null)
     setSelectedCardNo(null)

@@ -2145,6 +2145,92 @@ button:focus-visible {
   margin-top: 16px;
 }
 
+.debug-panel {
+  margin-top: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(113, 125, 160, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.34), transparent 22%),
+    rgba(229, 235, 247, 0.76);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.44),
+    0 12px 26px rgba(41, 48, 67, 0.08);
+}
+
+.debug-panel summary {
+  cursor: pointer;
+  padding: 14px 16px;
+  list-style: none;
+  color: var(--text-strong);
+  font-family: var(--decorative);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+}
+
+.debug-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.debug-panel-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 16px 16px;
+}
+
+.debug-section {
+  display: grid;
+  gap: 10px;
+}
+
+.debug-section h4 {
+  margin: 0;
+  color: #2e3953;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+}
+
+.debug-trace-list {
+  display: grid;
+  gap: 8px;
+}
+
+.debug-trace-item {
+  padding: 12px 13px;
+  border-radius: 14px;
+  border: 1px solid rgba(123, 136, 170, 0.14);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.46), transparent 24%),
+    rgba(245, 248, 253, 0.86);
+}
+
+.debug-trace-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.debug-trace-head strong {
+  color: #465472;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.debug-trace-head span {
+  color: rgba(76, 88, 116, 0.82);
+  font-size: 0.74rem;
+  word-break: break-word;
+}
+
+.debug-trace-item p {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
 .disclaimer {
   margin-top: 16px;
   font-size: 0.92rem;
