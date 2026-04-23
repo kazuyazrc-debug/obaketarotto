@@ -71,6 +71,10 @@ function buildSectionBody(
 }
 
 function pickRecommendedVtuber(reading: ReadingResult) {
+  if (reading.input.narratorMode === 'geoGuide') {
+    return '鬼屋敷ジオ'
+  }
+
   const seed =
     Number.parseInt(reading.id, 10) ||
     reading.positions.reduce((total, position, index) => total + position.cardNo * (index + 3), 0)
@@ -270,6 +274,12 @@ export function ResultPanel({
             </div>
           </div>
 
+          <div className="summary-card reading-summary-card">
+            <p className="summary-label">全体の読み取りについて</p>
+            <p className="mini-label">{recipientLabel}へ</p>
+            <p>{sanitize(latestReading.summary[activeLength])}</p>
+          </div>
+
           <div className="summary-card total-comment-card">
             <p className="summary-label">星巡りの帰結と次章</p>
             <div className="ritual-title-band">
@@ -361,12 +371,6 @@ export function ResultPanel({
                 {readingLengthLabel[length]}
               </button>
             ))}
-          </div>
-
-          <div className="summary-card">
-            <p className="summary-label">全体の読み取りについて</p>
-            <p className="mini-label">{recipientLabel}へ</p>
-            <p>{sanitize(latestReading.summary[activeLength])}</p>
           </div>
 
           <div className="spread-stage">

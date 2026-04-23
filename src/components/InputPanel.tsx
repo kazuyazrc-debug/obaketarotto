@@ -8,6 +8,7 @@ import {
 import type { ReadingInput } from '../lib/reading'
 
 type ReadingMode = ReadingInput['readingMode']
+type NarratorMode = ReadingInput['narratorMode']
 
 type SpreadPreview = {
   name: string
@@ -47,6 +48,26 @@ const readingModeCopy: Record<
     lead: '背景や迷いの前後関係まで含めて、少し丁寧に読みたい時のモードです。',
     detail: '補足の背景欄も使って、文脈ごと整えられます。',
     rows: 5,
+  },
+}
+
+const narratorModeCopy: Record<
+  NarratorMode,
+  {
+    title: string
+    subtitle: string
+    detail: string
+  }
+> = {
+  classic: {
+    title: 'いつもの読み',
+    subtitle: '静かな月光の口調',
+    detail: 'これまで通り、神秘的で落ち着いた読み方です。',
+  },
+  geoGuide: {
+    title: '鬼屋敷ジオ(偽)',
+    subtitle: '中央突破的回答',
+    detail: '読みの意味はそのままに、俺口調の中央突破な案内へ変えます。',
   },
 }
 
@@ -131,6 +152,7 @@ export function InputPanel({
       ? `${questionPlaceholders[form.intent]} 一文だけでも大丈夫です。`
       : questionPlaceholders[form.intent]
   const modeCopy = readingModeCopy[form.readingMode]
+  const narratorCopy = narratorModeCopy[form.narratorMode]
   const visibleTemplates =
     form.readingMode === 'quick' ? currentSupport.prompts.slice(0, 3) : currentSupport.prompts
 
@@ -186,6 +208,36 @@ export function InputPanel({
                   className={`reading-mode-chip${isActive ? ' active' : ''}`}
                   aria-pressed={isActive}
                   onClick={() => onUpdateField('readingMode', mode)}
+                >
+                  <strong>{title}</strong>
+                  <small>{subtitle}</small>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="field-shell reading-mode-field narrator-mode-field">
+          <div className="reading-mode-head">
+            <span>解説者</span>
+            <small>{narratorCopy.detail}</small>
+          </div>
+          <div className="reading-mode-switch" role="radiogroup" aria-label="解説者">
+            {(
+              [
+                ['classic', narratorModeCopy.classic.title, narratorModeCopy.classic.subtitle],
+                ['geoGuide', narratorModeCopy.geoGuide.title, narratorModeCopy.geoGuide.subtitle],
+              ] as const
+            ).map(([mode, title, subtitle]) => {
+              const isActive = form.narratorMode === mode
+
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  className={`reading-mode-chip${isActive ? ' active' : ''}`}
+                  aria-pressed={isActive}
+                  onClick={() => onUpdateField('narratorMode', mode)}
                 >
                   <strong>{title}</strong>
                   <small>{subtitle}</small>

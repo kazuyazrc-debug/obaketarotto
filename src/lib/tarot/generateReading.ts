@@ -22,6 +22,7 @@ type GenerateReadingDeps = {
 type GenerationCandidate = {
   reading: Reading
   score: number
+  hasForbiddenTail: boolean
 }
 
 type KeywordContext = {
@@ -74,6 +75,35 @@ const cadences: CadenceDefinition[] = [
   { id: 'cadence-long-oracular-rev-1', tone: 'oracular', position: 'reversed', length: 'long', text: '逆位置でも門が閉じるわけではなく、順番を誤らないことが通路を守ります。' },
   { id: 'cadence-long-tender-up-1', tone: 'tender', position: 'upright', length: 'long', text: 'やわらかな手つきで整えるほど、この読みは怖さより支えとして働いてくれます。' },
   { id: 'cadence-long-tender-rev-1', tone: 'tender', position: 'reversed', length: 'long', text: '今夜は立て直しを急がず、自分の揺れを抱えたまま歩幅を小さくするのがやさしい道です。' },
+  { id: 'cadence-short-tender-up-1', tone: 'tender', position: 'upright', length: 'short', text: '月明かりはまだ小さく残っています。' },
+  { id: 'cadence-short-tender-up-2', tone: 'tender', position: 'upright', length: 'short', text: '水面の揺れは少しずつ静まります。' },
+  { id: 'cadence-short-tender-up-3', tone: 'tender', position: 'upright', length: 'short', text: '淡い輪郭を追えば十分です。' },
+  { id: 'cadence-short-tender-up-4', tone: 'tender', position: 'upright', length: 'short', text: 'ろうそくの火は消えていません。' },
+  { id: 'cadence-short-tender-up-5', tone: 'tender', position: 'upright', length: 'short', text: '古い手紙の一行が道しるべです。' },
+  { id: 'cadence-short-tender-up-6', tone: 'tender', position: 'upright', length: 'short', text: '霧の薄い場所から進めます。' },
+  { id: 'cadence-short-tender-up-7', tone: 'tender', position: 'upright', length: 'short', text: '静けさの中で答えは急ぎません。' },
+  { id: 'cadence-short-tender-up-8', tone: 'tender', position: 'upright', length: 'short', text: '囁きに近い合図を拾えます。' },
+  { id: 'cadence-short-oracular-up-1', tone: 'oracular', position: 'upright', length: 'short', text: '月明かりの縁に次の兆しがあります。' },
+  { id: 'cadence-short-oracular-up-2', tone: 'oracular', position: 'upright', length: 'short', text: '霧がほどける場所に道は開きます。' },
+  { id: 'cadence-short-oracular-up-3', tone: 'oracular', position: 'upright', length: 'short', text: '水面に映る影が進路を示します。' },
+  { id: 'cadence-short-oracular-up-4', tone: 'oracular', position: 'upright', length: 'short', text: '静けさを選ぶほど流れは整います。' },
+  { id: 'cadence-short-oracular-up-5', tone: 'oracular', position: 'upright', length: 'short', text: '古い手紙の余白に答えが残ります。' },
+  { id: 'cadence-short-oracular-up-6', tone: 'oracular', position: 'upright', length: 'short', text: '淡い光を辿れば境目を越えられます。' },
+  { id: 'cadence-short-oracular-up-7', tone: 'oracular', position: 'upright', length: 'short', text: 'ろうそくの火が小さな決意を守ります。' },
+  { id: 'cadence-short-oracular-up-8', tone: 'oracular', position: 'upright', length: 'short', text: '囁きは遠くではなく足元にあります。' },
+  { id: 'cadence-medium-tender-up-2', tone: 'tender', position: 'upright', length: 'medium', text: '月明かりの下で一度立ち止まれば、急がなくても選べるものが見えてきます。' },
+  { id: 'cadence-medium-tender-up-3', tone: 'tender', position: 'upright', length: 'medium', text: '淡い輪郭を大事にすれば、まだ言葉になる前の答えも置き去りにしません。' },
+  { id: 'cadence-medium-tender-up-4', tone: 'tender', position: 'upright', length: 'medium', text: '水面の揺れを責めずに眺めるほど、今夜の心は少し扱いやすくなります。' },
+  { id: 'cadence-medium-tender-up-5', tone: 'tender', position: 'upright', length: 'medium', text: 'ろうそくの火を手で囲うように、小さな願いを守る時間が助けになります。' },
+  { id: 'cadence-medium-tender-up-6', tone: 'tender', position: 'upright', length: 'medium', text: '霧の向こうを急いで決めず、足元の一歩だけを選ぶことで流れは整います。' },
+  { id: 'cadence-medium-tender-up-7', tone: 'tender', position: 'upright', length: 'medium', text: '古い手紙の封を開くように、しまっていた本音を少しだけ見てもよい夜です。' },
+  { id: 'cadence-medium-tender-up-8', tone: 'tender', position: 'upright', length: 'medium', text: '静けさに耳を澄ませば、強く押さなくても進める場所が分かります。' },
+  { id: 'cadence-medium-oracular-up-3', tone: 'oracular', position: 'upright', length: 'medium', text: '月明かりが差す方へ、焦らず輪郭を確かめるほど判断は澄んでいきます。' },
+  { id: 'cadence-medium-oracular-up-4', tone: 'oracular', position: 'upright', length: 'medium', text: '水面に映った違和感を見逃さなければ、次の一手は静かに形を取ります。' },
+  { id: 'cadence-medium-oracular-up-5', tone: 'oracular', position: 'upright', length: 'medium', text: '古い手紙を読み返すように、残っていた合図を拾うことが流れを変えます。' },
+  { id: 'cadence-medium-oracular-up-6', tone: 'oracular', position: 'upright', length: 'medium', text: '霧の中で無理に走らず、見える境目だけを進めば十分に届きます。' },
+  { id: 'cadence-medium-oracular-up-7', tone: 'oracular', position: 'upright', length: 'medium', text: 'ろうそくの火を守るように、小さな確信を消さないことが鍵になります。' },
+  { id: 'cadence-medium-oracular-up-8', tone: 'oracular', position: 'upright', length: 'medium', text: '静けさの奥にある囁きを選べば、今夜の読みは現実へ降りていきます。' },
 ]
 
 const toneShift: Record<Tone, Tone> = {
@@ -106,13 +136,14 @@ export function generateReadingFromCardData(
     const candidate = buildCandidate(card, input, deps, retryCount)
     const validation = validateReading(candidate.reading)
 
-    if (validation.ok) {
+    if (validation.ok && !candidate.hasForbiddenTail) {
       return candidate.reading
     }
 
     attempts.push({
       reading: candidate.reading,
-      score: candidate.score - 10,
+      score: candidate.score - (validation.ok ? 0 : 10),
+      hasForbiddenTail: candidate.hasForbiddenTail,
     })
   }
 
@@ -131,6 +162,12 @@ function buildCandidate(
   const forbiddenTemplates = new Set(recentFive.map((snapshot) => snapshot.templateId))
   const forbiddenOpeners = new Set(recentFive.map((snapshot) => snapshot.openerId))
   const forbiddenClosings = new Set(recentFive.map((snapshot) => snapshot.closingId))
+  const forbiddenCadences = new Set(
+    recentFive.map((snapshot) => snapshot.cadenceId).filter(isPresentString),
+  )
+  const forbiddenTailSentences = new Set(
+    recentFive.map((snapshot) => normalizeTailSentence(snapshot.tailSentence)).filter(isPresentString),
+  )
   const keywordContext: KeywordContext = {
     recentCounts: countKeywords(recentTen),
     current: [],
@@ -142,6 +179,7 @@ function buildCandidate(
     input.position,
     deps.rng,
     forbiddenTemplates,
+    forbiddenCadences,
   )
   const opener = pickFragment({
     fragments: card.lineFragments.opener,
@@ -205,6 +243,8 @@ function buildCandidate(
   const body = normalizeJapaneseText(
     `${templateVariant.template.format(renderedParts)} ${templateVariant.cadence.text}`,
   )
+  const tailSentence = extractTailSentence(body)
+  const hasForbiddenTail = forbiddenTailSentences.has(normalizeTailSentence(tailSentence))
   const selectedFragmentIds = [opener.id, state.id]
   if (hidden) {
     selectedFragmentIds.push(hidden.id)
@@ -226,6 +266,8 @@ function buildCandidate(
     keywords: keywordContext.current,
     openerId: opener.id,
     closingId: closing.id,
+    cadenceId: templateVariant.cadence.id,
+    tailSentence,
     debug: {
       cardDisplayName: card.displayName,
       effectiveTone,
@@ -244,17 +286,21 @@ function buildCandidate(
       keywords: keywordContext.current,
       retryCount,
       usedTemplateId: templateVariant.templateId,
+      cadenceId: templateVariant.cadence.id,
+      tailSentence,
     },
   }
 
-  const score = scoreReading(reading, deps.history)
-  return { reading, score }
+  const score = scoreReading(reading, deps.history) - (hasForbiddenTail ? 30 : 0)
+  return { reading, score, hasForbiddenTail }
 }
 
 function buildFallback(card: StructuredCardData, input: ReadingInput): Reading {
   const body = normalizeJapaneseText(
     `${card.displayName}は${card.coreTheme[0]}を照らします。いまは${card.lightMeaning[0]}を意識しつつ、${card.actions[input.topic][0]}ところから静かに整えるとよいでしょう。`,
   )
+
+  const tailSentence = extractTailSentence(body)
 
   return {
     body,
@@ -268,6 +314,8 @@ function buildFallback(card: StructuredCardData, input: ReadingInput): Reading {
     keywords: [card.coreTheme[0], card.emotions[0]],
     openerId: 'fallback-opener',
     closingId: 'fallback-closing',
+    cadenceId: 'fallback-cadence',
+    tailSentence,
     debug: {
       cardDisplayName: card.displayName,
       effectiveTone: input.position === 'reversed' ? toneShift[input.tone] : input.tone,
@@ -283,6 +331,8 @@ function buildFallback(card: StructuredCardData, input: ReadingInput): Reading {
       keywords: [card.coreTheme[0], card.emotions[0]],
       retryCount: 3,
       usedTemplateId: 'fallback-template',
+      cadenceId: 'fallback-cadence',
+      tailSentence,
     },
   }
 }
@@ -293,6 +343,7 @@ function pickTemplateVariant(
   position: Position,
   rng: () => number,
   forbiddenTemplateIds: ReadonlySet<string>,
+  forbiddenCadenceIds: ReadonlySet<string>,
 ) {
   const templatePool = templates.filter(
     (template) => template.length === length && template.tones.includes(tone),
@@ -310,11 +361,27 @@ function pickTemplateVariant(
     }
   }
 
-  const cleanPool = combinations.filter(
+  const withoutTemplateAndCadence = combinations.filter(
+    (variant) =>
+      !forbiddenTemplateIds.has(variant.templateId) && !forbiddenCadenceIds.has(variant.cadence.id),
+  )
+  const withoutTemplateOnly = combinations.filter(
     (variant) => !forbiddenTemplateIds.has(variant.templateId),
   )
+  const withoutCadenceOnly = combinations.filter(
+    (variant) => !forbiddenCadenceIds.has(variant.cadence.id),
+  )
 
-  return pickOne(cleanPool.length > 0 ? cleanPool : combinations, rng)
+  return pickOne(
+    withoutTemplateAndCadence.length > 0
+      ? withoutTemplateAndCadence
+      : withoutTemplateOnly.length > 0
+        ? withoutTemplateOnly
+        : withoutCadenceOnly.length > 0
+          ? withoutCadenceOnly
+          : combinations,
+    rng,
+  )
 }
 
 function pickFragment(config: {
@@ -475,6 +542,25 @@ function bodyLengthPenalty(length: number, min: number, max: number) {
   }
 
   return length - max
+}
+
+function extractTailSentence(text: string) {
+  const normalized = normalizeJapaneseText(text)
+  const sentences = normalized.match(/[^。！？.!?]+[。！？.!?]?/g)
+
+  if (!sentences || sentences.length === 0) {
+    return normalized
+  }
+
+  return sentences[sentences.length - 1].trim()
+}
+
+function normalizeTailSentence(text: string | undefined) {
+  return (text ?? '').replace(/\s+/g, '').trim()
+}
+
+function isPresentString(value: string | undefined): value is string {
+  return Boolean(value)
 }
 
 function normalizeJapaneseText(text: string) {

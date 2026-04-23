@@ -133,6 +133,40 @@ describe('generateReading', () => {
     expect(upright.body).not.toBe(reversed.body)
   })
 
+  it('avoids a recent cadence id when alternatives are available', () => {
+    const input = {
+      cardId: 'moon',
+      topic: 'work',
+      tone: 'tender',
+      length: 'medium',
+      position: 'upright',
+    } as const
+    const first = generateReading(input, {
+      rng: createSeededRng(77),
+      history: [],
+    })
+    const second = generateReading(input, {
+      rng: createSeededRng(77),
+      history: [
+        {
+          card: first.card,
+          position: first.position,
+          selectedFragmentIds: [],
+          templateId: 'unrelated-template',
+          openerId: 'unrelated-opener',
+          closingId: 'unrelated-closing',
+          cadenceId: first.cadenceId,
+          tailSentence: '別の末尾です。',
+          keywords: [],
+        },
+      ],
+    })
+
+    expect(first.cadenceId).toBeTruthy()
+    expect(second.cadenceId).not.toBe(first.cadenceId)
+    expect(second.tailSentence.length).toBeGreaterThan(0)
+  })
+
   it('meets the uniqueness target for one fixed condition', () => {
     const bodies = new Set<string>()
 

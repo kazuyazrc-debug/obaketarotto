@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  geoSummaryClosingVariants,
+  geoSummaryIntroVariants,
+  narrateSummary,
+} from '../narrator'
+import {
   buildReadingSnapshot,
   createReading,
   type ReadingResult,
@@ -10,6 +15,7 @@ function createReadingFixture(): ReadingResult {
     {
       nickname: 'テスト',
       readingMode: 'deep',
+      narratorMode: 'classic',
       intent: '恋愛',
       question: '相手との距離感をどう整えるべき？',
       timeframe: '今週',
@@ -17,7 +23,7 @@ function createReadingFixture(): ReadingResult {
       reversals: false,
       relationTheme: true,
       relationType: '気になる相手',
-      background: '最近はやり取りがあるけれど、空気が読みにくい。',
+      background: '最近のやり取りがあり、空気が読みにくい。',
     },
     {
       anchorCardNo: 18,
@@ -30,6 +36,11 @@ function createReadingFixture(): ReadingResult {
     id: 'reading-fixture',
     createdAt: '2026-04-20T00:00:00.000Z',
   }
+}
+
+function tailSentence(text: string) {
+  const sentences = text.match(/[^。！？.!?]+[。！？.!?]?/g)
+  return (sentences?.[sentences.length - 1] ?? text).replace(/\s+/g, '').trim()
 }
 
 describe('buildReadingSnapshot', () => {
@@ -48,6 +59,7 @@ describe('buildReadingSnapshot', () => {
       {
         nickname: 'テスト',
         readingMode: 'quick',
+        narratorMode: 'classic',
         intent: '仕事',
         question: '今週の仕事で何を優先するべき？',
         timeframe: '今週',
@@ -73,6 +85,7 @@ describe('buildReadingSnapshot', () => {
       {
         nickname: 'テスト',
         readingMode: 'deep',
+        narratorMode: 'classic',
         intent: '創作',
         question: '今夜の創作で何を中心に据えるべき？',
         timeframe: '今週',
@@ -103,6 +116,7 @@ describe('buildReadingSnapshot', () => {
       {
         nickname: 'テスト',
         readingMode: 'quick',
+        narratorMode: 'classic',
         intent: 'メンタル',
         question: 'いま心を守るには何を優先するとよい？',
         timeframe: '今日',
@@ -121,5 +135,93 @@ describe('buildReadingSnapshot', () => {
     expect(reading.anchorCardNo).toBeNull()
     expect(reading.positions.some((position) => position.cardNo === reading.keyCardNo)).toBe(true)
     expect(reading.keyCardReason.length).toBeGreaterThan(0)
+  })
+
+  it('avoids repeated tail sentences across Reading Sequence card bodies', () => {
+    const reading = createReading(
+      {
+        nickname: 'テスト',
+        readingMode: 'quick',
+        narratorMode: 'classic',
+        intent: '仕事',
+        question: '今週の仕事で、最初に整えることは？',
+        timeframe: '今週',
+        spreadId: 'sixfold',
+        reversals: false,
+        relationTheme: false,
+        relationType: '',
+        background: '',
+      },
+      {
+        anchorCardNo: 1,
+        history: [],
+      },
+    )
+
+    const mediumTails = reading.positions.map((position) => tailSentence(position.medium))
+    const shortTails = reading.positions.map((position) => tailSentence(position.short))
+
+    expect(new Set(mediumTails).size).toBe(mediumTails.length)
+    expect(new Set(shortTails).size).toBe(shortTails.length)
+  })
+
+  it('can switch to the geo guide narrator without changing the reading shape', () => {
+    const reading = createReading(
+      {
+        nickname: 'テスト',
+        readingMode: 'quick',
+        narratorMode: 'geoGuide',
+        intent: '仕事',
+        question: '今週の仕事で何を優先するべき？',
+        timeframe: '今週',
+        spreadId: 'sixfold',
+        reversals: false,
+        relationTheme: false,
+        relationType: '',
+        background: '',
+      },
+      {
+        anchorCardNo: 1,
+        history: [],
+      },
+    )
+
+    const snapshot = buildReadingSnapshot(reading)
+
+    expect(reading.input.narratorMode).toBe('geoGuide')
+    expect(geoSummaryIntroVariants.some((intro) => reading.summary.medium.startsWith(intro))).toBe(true)
+    expect(geoSummaryClosingVariants.some((closing) => reading.summary.medium.endsWith(closing))).toBe(true)
+    expect(reading.positions).toHaveLength(reading.spread.cardCount)
+    expect(reading.positions.map((position) => position.medium).join('\n')).not.toMatch(
+      /ここは気合で一歩だ。|ビビるな、俺もいる。|最後の一回で流れを変えるぞ。|札だけに、さっと動ける。/,
+    )
+    expect(snapshot.nextStep).not.toMatch(/俺|気合|根性|ビビ|最後の一回|札だけに|主役|中央突破/)
+  })
+
+  it('wraps geo guide summaries without rewriting the generated middle text', () => {
+    const middle = '中盤本文です。ここは変えません。'
+    const summary = narrateSummary(
+      {
+        short: middle,
+        medium: middle,
+        long: middle,
+      },
+      'geoGuide',
+      'fixed-summary',
+    )
+
+    expect(summary.medium).toContain(middle)
+    expect(geoSummaryIntroVariants.some((intro) => summary.medium.startsWith(intro))).toBe(true)
+    expect(geoSummaryClosingVariants.some((closing) => summary.medium.endsWith(closing))).toBe(true)
+  })
+
+  it('keeps geo guide summary variants free of forbidden character wording', () => {
+    expect(geoSummaryIntroVariants).toHaveLength(30)
+    expect(geoSummaryClosingVariants).toHaveLength(30)
+
+    for (const variant of [...geoSummaryIntroVariants, ...geoSummaryClosingVariants]) {
+      expect(variant).not.toContain('主人公')
+      expect(variant).not.toContain('おばけ')
+    }
   })
 })

@@ -1,5 +1,6 @@
 import { TarotCardFace } from './TarotCardFace'
 import { getCardBackTheme } from '../lib/ritualTheme'
+import type { NarratorMode } from '../lib/reading'
 
 type RitualPhase = 'idle' | 'choosingCard' | 'chosenCardAnimating' | 'spreading' | 'complete'
 
@@ -15,6 +16,7 @@ type CardSelectionStageProps = {
   currentIntent: string
   isLoading: boolean
   moonPhaseLabel: string
+  narratorMode: NarratorMode
   phase: RitualPhase
   selectedCard: RitualSelectionCard | null
   selectedCardNo: number | null
@@ -27,6 +29,7 @@ export function CardSelectionStage({
   currentIntent,
   isLoading,
   moonPhaseLabel,
+  narratorMode,
   phase,
   selectedCard,
   selectedCardNo,
@@ -43,7 +46,9 @@ export function CardSelectionStage({
         <p className="panel-kicker">Step 2</p>
         <h2>直感で一枚選ぶ</h2>
         <p className="panel-note">
-          迷いは整理しきれていなくても大丈夫です。{currentIntent}の読みにつながる札を、一枚だけ静かに選んでください。
+          {narratorMode === 'geoGuide'
+            ? 'お前の運命の一枚を選ぶんだ。'
+            : `迷いは整理しきれていなくても大丈夫です。${currentIntent}の読みにつながる札を、一枚だけ静かに選んでください。`}
         </p>
       </div>
 
@@ -110,7 +115,11 @@ export function CardSelectionStage({
 
       <div className="ritual-caption">
         {isChoosing ? (
-          <p>理由を考えすぎず、いま心が向いた一枚を選ぶと、その札が儀式の起点になります。</p>
+          <p>
+            {narratorMode === 'geoGuide'
+              ? '考えすぎず、自分の直感で選んでいいんだぜ。'
+              : '理由を考えすぎず、いま心が向いた一枚を選ぶと、その札が儀式の起点になります。'}
+          </p>
         ) : selectedCard ? (
           <div className="ritual-selected-copy">
             <p className="mini-label">Chosen Card</p>

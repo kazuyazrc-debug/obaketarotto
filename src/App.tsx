@@ -37,6 +37,7 @@ const currentSpread = {
 const initialForm: ReadingInput = {
   nickname: '',
   readingMode: 'quick',
+  narratorMode: 'classic',
   intent: '仕事',
   question: '',
   timeframe: '今週',
@@ -106,7 +107,25 @@ function App() {
   const isRitualActive = ritualPhase === 'choosingCard' || ritualPhase === 'chosenCardAnimating' || ritualPhase === 'spreading'
 
   function updateField<K extends keyof ReadingInput>(key: K, value: ReadingInput[K]) {
-    setForm((current) => ({ ...current, [key]: value }))
+    setForm((current) => {
+      if (key === 'narratorMode' && value === 'geoGuide') {
+        return {
+          ...current,
+          [key]: value,
+          reversals: false,
+        }
+      }
+
+      if (key === 'narratorMode' && value === 'classic') {
+        return {
+          ...current,
+          [key]: value,
+          reversals: true,
+        }
+      }
+
+      return { ...current, [key]: value }
+    })
   }
 
   function applyQuestionTemplate(template: string) {
@@ -283,6 +302,7 @@ function App() {
             selectedCardNo={selectedCardNo}
             selectionCards={selectionCards}
             moonPhaseLabel={moonPhase.label}
+            narratorMode={form.narratorMode}
             onBack={cancelRitual}
             onChoose={handleChooseCard}
           />

@@ -89,6 +89,8 @@ export type ReadingDebug = {
   keywords: string[]
   retryCount: number
   usedTemplateId: string
+  cadenceId: string
+  tailSentence: string
 }
 
 export type Reading = {
@@ -103,6 +105,8 @@ export type Reading = {
   keywords: string[]
   openerId: string
   closingId: string
+  cadenceId: string
+  tailSentence: string
   debug: ReadingDebug
 }
 
@@ -112,6 +116,8 @@ export type ReadingSnapshot = Pick<
 > & {
   openerId: string
   closingId: string
+  cadenceId?: string
+  tailSentence?: string
   keywords: string[]
 }
 

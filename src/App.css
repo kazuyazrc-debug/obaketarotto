@@ -1756,6 +1756,21 @@ button:focus-visible {
     linear-gradient(180deg, rgba(241, 245, 255, 0.94), rgba(224, 229, 242, 0.88));
 }
 
+.reading-summary-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.62), transparent 20%),
+    linear-gradient(180deg, rgba(235, 240, 250, 0.98), rgba(214, 222, 238, 0.94));
+  border-color: rgba(122, 135, 166, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    0 14px 30px rgba(42, 50, 70, 0.08);
+}
+
+.reading-summary-card p:last-child {
+  color: #313a50;
+  line-height: 1.9;
+}
+
 .spread-stage {
   display: grid;
   gap: 16px;

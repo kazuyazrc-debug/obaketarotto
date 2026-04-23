@@ -142,6 +142,7 @@ function createReadingFixture(
     input: {
       nickname: 'テスト',
       readingMode,
+      narratorMode: 'classic',
       intent,
       question: 'いま最も重い輪郭を知りたい',
       timeframe,

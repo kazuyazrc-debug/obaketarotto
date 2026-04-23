@@ -11,6 +11,7 @@ import {
 import { getStructuredCardByNo } from './tarot/cards'
 import { buildReadingHistorySnapshot } from './tarot/history'
 import { generateReadingFromCardData } from './tarot/generateReading'
+import { narrateSummary } from './narrator'
 import {
   buildSynthesisSnapshot,
   buildSynthesisSummary,
@@ -33,6 +34,7 @@ export type DrawnCard = {
 export type ReadingInput = {
   nickname: string
   readingMode: 'quick' | 'deep'
+  narratorMode: NarratorMode
   intent: IntentCategory
   question: string
   timeframe: TimeframeOption
@@ -42,6 +44,8 @@ export type ReadingInput = {
   relationType: string
   background: string
 }
+
+export type NarratorMode = 'classic' | 'geoGuide'
 
 export type ReadingPositionResult = {
   label: string
@@ -112,7 +116,12 @@ export function createReading(
   const createdAt = new Date().toISOString()
   const id = `${Date.now()}`
   const deck = drawCards(spread.cardCount, input.reversals, options.anchorCardNo ?? null)
-  const rollingHistory = [...(options.history ?? [])]
+  const baseHistory = options.history ?? []
+  const rollingHistoryByLength: Record<ReadingLength, TarotReadingSnapshot[]> = {
+    short: [...baseHistory],
+    medium: [...baseHistory],
+    long: [...baseHistory],
+  }
 
   const positions = spread.positions.map((position, index) => {
     const built = buildPositionResult(
@@ -120,10 +129,12 @@ export function createReading(
       deck[index],
       input,
       createdAt,
-      rollingHistory,
+      rollingHistoryByLength,
       `${id}:${position.label}:${index}`,
     )
-    rollingHistory.unshift(built.historySnapshot)
+    rollingHistoryByLength.short.unshift(buildReadingHistorySnapshot(built.generated.short))
+    rollingHistoryByLength.medium.unshift(built.historySnapshot)
+    rollingHistoryByLength.long.unshift(buildReadingHistorySnapshot(built.generated.long))
     return built
   })
 
@@ -148,12 +159,13 @@ export function createReading(
     anchorCardNo: options.anchorCardNo ?? null,
     generatedHistorySnapshots: positions.map((position) => position.historySnapshot),
   }
+  const narratorMode = input.narratorMode ?? 'classic'
   const summary = buildSummary(baseReading)
   const totalComment = buildTotalComment(baseReading)
 
   return {
     ...baseReading,
-    summary: summary.text,
+    summary: narrateSummary(summary.text, narratorMode, `${id}:narrator:summary`),
     totalComment: totalComment.text,
     synthesisDebug: {
       totalComment: totalComment.debugTrace,
@@ -195,7 +207,7 @@ function buildPositionResult(
   drawnCard: DrawnCard,
   input: ReadingInput,
   createdAt: string,
-  history: ReadonlyArray<TarotReadingSnapshot>,
+  historyByLength: Record<ReadingLength, ReadonlyArray<TarotReadingSnapshot>>,
   seedKey: string,
 ): ReadingPositionResult {
   const card = cards.find((entry) => entry.no === drawnCard.no)
@@ -219,7 +231,7 @@ function buildPositionResult(
         length: 'short',
         position: positionValue,
       },
-      { rng: createSeededRng(hashString(`${seedKey}:short:${createdAt}`)), history },
+      { rng: createSeededRng(hashString(`${seedKey}:short:${createdAt}`)), history: historyByLength.short },
     ),
     medium: generateReadingFromCardData(
       structuredCard,
@@ -230,7 +242,7 @@ function buildPositionResult(
         length: 'medium',
         position: positionValue,
       },
-      { rng: createSeededRng(hashString(`${seedKey}:medium:${createdAt}`)), history },
+      { rng: createSeededRng(hashString(`${seedKey}:medium:${createdAt}`)), history: historyByLength.medium },
     ),
     long: generateReadingFromCardData(
       structuredCard,
@@ -241,7 +253,7 @@ function buildPositionResult(
         length: 'long',
         position: positionValue,
       },
-      { rng: createSeededRng(hashString(`${seedKey}:long:${createdAt}`)), history },
+      { rng: createSeededRng(hashString(`${seedKey}:long:${createdAt}`)), history: historyByLength.long },
     ),
   }
 

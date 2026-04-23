@@ -15,6 +15,8 @@ export function buildReadingHistorySnapshot(reading: Reading): ReadingSnapshot {
     templateId: reading.templateId,
     openerId: reading.openerId,
     closingId: reading.closingId,
+    cadenceId: reading.cadenceId,
+    tailSentence: reading.tailSentence,
     keywords: reading.keywords,
   }
 }
