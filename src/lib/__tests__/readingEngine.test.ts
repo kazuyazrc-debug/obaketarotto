@@ -198,7 +198,7 @@ describe('buildReadingSnapshot', () => {
     expect(snapshot.nextStep).not.toMatch(/俺|気合|根性|ビビ|最後の一回|札だけに|主役|中央突破/)
   })
 
-  it('wraps geo guide summaries without rewriting the generated middle text', () => {
+  it('lightly reshapes only the middle text for geo guide summaries', () => {
     const middle = '中盤本文です。ここは変えません。'
     const summary = narrateSummary(
       {
@@ -210,9 +210,21 @@ describe('buildReadingSnapshot', () => {
       'fixed-summary',
     )
 
-    expect(summary.medium).toContain(middle)
+    expect(summary.medium).toContain('中盤本文だ。ここは変えません。')
+    expect(summary.medium).not.toContain(middle)
     expect(geoSummaryIntroVariants.some((intro) => summary.medium.startsWith(intro))).toBe(true)
     expect(geoSummaryClosingVariants.some((closing) => summary.medium.endsWith(closing))).toBe(true)
+  })
+
+  it('keeps classic summaries unchanged', () => {
+    const middle = '中盤本文です。ここは変えません。'
+    const summary = {
+      short: middle,
+      medium: middle,
+      long: middle,
+    }
+
+    expect(narrateSummary(summary, 'classic', 'fixed-summary')).toBe(summary)
   })
 
   it('keeps geo guide summary variants free of forbidden character wording', () => {

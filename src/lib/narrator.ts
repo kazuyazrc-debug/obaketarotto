@@ -99,8 +99,7 @@ export function narrateText(
   const intro = pickBySeed(geoSummaryIntroVariants, `${seedKey}:intro`)
   const closing = pickBySeed(geoSummaryClosingVariants, `${seedKey}:closing`)
 
-  // Summary keeps the generated middle body untouched; only intro and closing vary.
-  return `${intro}${trimmed}${closing}`
+  return `${intro}${shapeGeoSummaryBody(trimmed)}${closing}`
 }
 
 export function narratePositionResult(
@@ -160,6 +159,31 @@ export function narrateSummary(
 
 function pickBySeed(items: readonly string[], seedKey: string) {
   return items[hashString(seedKey) % items.length]
+}
+
+function shapeGeoSummaryBody(text: string) {
+  return text
+    .replace(/していきます。/g, 'していく。')
+    .replace(/していきます/g, 'していく')
+    .replace(/必要があります。/g, '必要がある。')
+    .replace(/必要があります/g, '必要がある')
+    .replace(/かもしれません。/g, 'かもしれない。')
+    .replace(/かもしれません/g, 'かもしれない')
+    .replace(/でしょう。/g, 'だろう。')
+    .replace(/でしょう/g, 'だろう')
+    .replace(/できます。/g, 'できる。')
+    .replace(/できます/g, 'できる')
+    .replace(/見えます。/g, '見える。')
+    .replace(/見えます/g, '見える')
+    .replace(/あります。/g, 'ある。')
+    .replace(/あります/g, 'ある')
+    .replace(/なります。/g, 'なる。')
+    .replace(/なります/g, 'なる')
+    .replace(/います。/g, 'いる。')
+    .replace(/います/g, 'いる')
+    .replace(/です。/g, 'だ。')
+    .replace(/です/g, 'だ')
+    .replace(/ます。/g, 'る。')
 }
 
 function shapeGeoVoice(text: string) {
