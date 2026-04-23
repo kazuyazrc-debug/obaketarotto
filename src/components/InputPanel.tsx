@@ -67,7 +67,7 @@ const narratorModeCopy: Record<
   geoGuide: {
     title: '鬼屋敷ジオ(偽)',
     subtitle: '中央突破的回答',
-    detail: '読みの意味はそのままに、俺口調の中央突破な案内へ変えます。',
+    detail: '読みの意味はそのまま、解説者をイマジナリー鬼屋敷ジオに変更するモード',
   },
 }
 
