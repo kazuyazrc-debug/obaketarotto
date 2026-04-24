@@ -35,6 +35,7 @@ export function sanitizeReadingText(
     : text.replace(new RegExp(escapeRegExp(recipientLabel), 'g'), recipientToken)
 
   next = sanitizeCharacterReferences(next, names)
+  next = normalizeArcanaLabels(next)
 
   return next
     .replace(new RegExp(recipientToken, 'g'), recipientLabel)
@@ -44,6 +45,11 @@ export function sanitizeReadingText(
     .replace(/、{2,}/g, '、')
     .replace(/。{2,}/g, '。')
     .trim()
+}
+
+function normalizeArcanaLabels(text: string) {
+  return text
+    .replace(/裁判/g, '審判')
 }
 
 export function sanitizeCharacterReferences(text: string, extraNames: string[] = []) {
